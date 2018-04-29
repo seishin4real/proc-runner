@@ -1,15 +1,6 @@
 <template>
-  <!-- <div id="title-bar">
-    <div id="title">${title}</div>
-    <div id="title-bar-btns">
-      <button id="config-btn"> </button>
-      <button id="min-btn" click.delegate="minimizeWindow()"> </button>
-      <button id="max-btn" click.delegate="maximizeWindow()"> </button>
-      <button id="close-btn" click.delegate="tryCloseWindow()"> </button>
-    </div>
-  </div>
-  <section id="content">
-    <slot> </slot>
-  </section> -->
-  <div>App works! :D</div>
+  <require from="./components/procs"></require>
+  <require from="./components/proc-output"></require>
+  <procs></procs>
+  <proc-output></procs>
 </template>

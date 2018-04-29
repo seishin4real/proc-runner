@@ -1,0 +1,49 @@
+@import './bulma-theme-slate/_variables.sass'
+
+// @import './bulma-overrides/_variables.sass'
+@import './bulma/utilities/initial-variables.sass'
+@import './bulma/utilities/functions.sass'
+
+$control-padding-vertical: calc(0.185em - 1px) !default
+$control-padding-horizontal: calc(0.315em - 1px) !default
+
+$label-weight: $weight-normal
+
+@import './bulma/utilities/derived-variables.sass'
+
+$primary-dark: darken($primary, 0.4) !default
+$primary-dark-invert: findColorInvert($primary-invert) !default
+
+$accent: $purple !default
+$accent-invert: findColorInvert($accent) !default
+
+$addColors: ( "primary-dark":($primary-dark, $primary-dark-invert), "accent": ($accent, $accent-invert) )
+$colors: map-merge($colors, $addColors);
+
+//elements
+$input-color: $light !default
+$input-background-color: $primary !default
+$input-border-color: $primary-dark !default
+$input-shadow: inset 0 1px 2px rgba($black, 0.1) !default
+$input-focus-border-color: $grey !default
+
+// $section-padding: 1rem !default
+// $section-padding-medium: 2rem 1.5rem !default
+// $section-padding-large: 3rem 1.5rem !default
+// $box-padding: 0.75rem !default
+// $notification-padding: 1.25rem 1.5rem !default  
+
+
+
+@import './bulma/bulma.sass'
+
+@import './bulma-theme-slate/_overrides.sass'
+@import './bulma-overrides/_overrides.sass'
+
+@import './global/layout.sass'
+@import './global/ux.sass'
+@import './global/ux.sass'
+
+@import '../components/_index.sass'
+// @import '../pages/_index.sass'
+// @import '../resources/elements/_index.sass'

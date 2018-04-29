@@ -1,0 +1,15 @@
+<template>
+  <require from="./proc-menu"></require>
+  <aside class="menu">
+    <template repeat.for="project of projects">
+      <p class="menu-label">
+        <proc-menu project.bind="project"></proc-menu>
+      </p>
+      <ul class="menu-list">
+        <li repeat.for="item of project.items" click.delegate="showOutput(item)">
+          <proc-menu item.bind="item"></proc-menu>
+        </li>
+      </ul>
+    </template>
+  </aside>
+</template>
