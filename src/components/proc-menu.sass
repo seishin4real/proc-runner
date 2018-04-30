@@ -1,0 +1,40 @@
+@keyframes spin
+  0%
+    transform: rotate(0deg)
+  100%
+    transform: rotate(359deg)
+
+=spin
+  animation: spin 1000ms linear infinite
+
+.proc-menu
+  &.item
+    border-bottom: 1px dotted lighten($primary, .2)
+  .icon
+    width: 1rem !important
+    height: 1rem !important
+    fill: $primary
+    transition: fill 0.5s
+    &.pm-idle
+      fill: lighten($primary, .2)
+    &.pm-starting
+      fill: orange
+      +spin
+    &.pm-running
+      fill: green
+    &.pm-stopping
+      fill: red
+      +spin
+  .level-left .icon
+    margin-right: 3px
+  .button
+    padding: 0 0.75rem
+    display: inline-flex
+    border: 0
+    background: none
+    &:hover 
+      background: none
+      svg.icon
+        fill: $accent
+    &.isAll svg.icon
+      fill: $warning

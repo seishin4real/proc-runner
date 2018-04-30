@@ -1,21 +1,29 @@
 <template>
-  <div class="level">
-    <div class="level-left">${project ? project.title : item.title}</div>
+  <div class="proc-menu level ${project ? 'project': 'item'}">
+    <div class="level-left">
+      <svg if.bind="item" viewBox="0 0 16 16" class="icon pm-${state}"><use xlink:href="dist/icons.svg#icon-${state === 'idle' || state === 'running' ? 'switch': 'spinner'}"></use></svg>
+      ${project ? project.title : item.title}
+    </div>
     <div class="level-right">
       <div class="field has-addons">
+        <p class="control" if.bind="item">
+          <a class="button is-small ${isAll ? 'isAll': ''}" title="Included in all" click.delegate="toggleAll()">
+            <svg viewBox="0 0 16 16" class="icon"><use xlink:href="dist/icons.svg#icon-radio-${isAll ? 'checked': 'unchecked'}"></use></svg>
+          </a>
+        </p>
         <p class="control">
           <a class="button is-small" title="Start" click.delegate="start()">
-            <span>S</span>
+            <svg viewBox="0 0 16 16" class="icon"><use xlink:href="dist/icons.svg#icon-start"></use></svg>
           </a>
         </p>
         <p class="control">
           <a class="button is-small" title="Restart" click.delegate="restart()">
-            <span>R</span>
+            <svg viewBox="0 0 16 16" class="icon"><use xlink:href="dist/icons.svg#icon-reset"></use></svg>
           </a>
         </p>
         <p class="control">
           <a class="button is-small" title="Stop" click.delegate="stop()">
-            <span>S</span>
+            <svg viewBox="0 0 16 16" class="icon"><use xlink:href="dist/icons.svg#icon-stop"></use></svg>
           </a>
         </p>
       </div>
