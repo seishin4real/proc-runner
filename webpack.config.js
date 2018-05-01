@@ -12,7 +12,7 @@ const ensureArray = (config) => config && (Array.isArray(config) ? config : [con
 const when = (condition, config, negativeConfig) => condition ? ensureArray(config) : ensureArray(negativeConfig);
 
 // primary config:
-const version = JSON.stringify(require("./package.json").version).replace(/"/g, '');
+const version = JSON.stringify(require('./package.json').version).replace(/"/g, '');
 const title = 'Proc-Runner v.' + version;
 const outDir = path.resolve(__dirname, project.platform.output);
 const srcDir = path.resolve(__dirname, 'src');
@@ -30,7 +30,7 @@ module.exports = ({ production, server, extractCss, coverage, analyze } = {}) =>
   },
   entry: {
     app: ['aurelia-bootstrapper'],
-    vendor: ['bluebird'],
+    vendor: ['bluebird', './electron-fix.js'],
   },
   mode: production ? 'production' : 'development',
   output: {
@@ -46,7 +46,7 @@ module.exports = ({ production, server, extractCss, coverage, analyze } = {}) =>
     new ModuleDependenciesPlugin({ 'aurelia-testing': ['./compile-spy', './view-spy'] }),
     new HtmlWebpackPlugin({
       template: 'index.ejs',
-      filename: "../index.html",
+      filename: '../index.html',
       metadata: { title, server, baseUrl }
     }),
     new CopyWebpackPlugin(['static/favicon.ico', 'static/icons.svg']),

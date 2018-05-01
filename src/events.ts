@@ -1,0 +1,8 @@
+export const PROJECT_START = 'PROJECT_START';
+export const PROJECT_RESET = 'PROJECT_RESET';
+export const PROJECT_STOP = 'PROJECT_STOP';
+export const PROC_START = 'PROC_START';
+export const PROC_RESET = 'PROC_RESET';
+export const PROC_STOP = 'PROC_STOP';
+export const PROJECTS_MODIFIED = 'PROJECTS_MODIFIED';
+export const OUTPUT_INITIALIZED = 'OUTPUT_INITIALIZED';

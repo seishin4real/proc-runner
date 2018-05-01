@@ -11,3 +11,19 @@ procs
   .menu-list
     border-left: 1px solid #dbdbdb
     padding-left: 0.75rem
+    li
+      cursor: pointer
+      position: relative
+      &:after
+        content: ""
+        position: absolute
+        border-bottom: 2px solid $accent
+        display: block
+        bottom: 0
+        left: 0
+        width: 0
+        transition: width 0.3s
+      &:hover:after
+        width: 100%
+        transition: width 1s
+

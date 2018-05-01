@@ -1,34 +1,33 @@
-import { Process, Project } from './procs';
+import * as events from '../events';
+import { Process, Project } from '../models';
 import { EventAggregator } from 'aurelia-event-aggregator';
-import { bindable, containerless, customElement } from 'aurelia-framework';
+import { autoinject, bindable, containerless, customElement } from 'aurelia-framework';
 
 @containerless()
 @customElement('proc-menu')
+@autoinject()
 export class ProcMenuComponent {
-  constructor(private _ea: EventAggregator) {}
+  constructor(private _ea: EventAggregator) { }
 
   @bindable() project: Project;
   @bindable() item: Process;
 
-  isAll = false;
   state: 'idle' | 'starting' | 'running' | 'stopping' = 'idle';
 
 
-  toggleAll() {
-    this.isAll = !this.isAll;
+  toggleIsBatch() {
+    this.item.isBatch = !this.item.isBatch;
+    this._ea.publish(events.PROJECTS_MODIFIED);
   }
-  start() {
-    this._ea.publish('proc-start', this.project || this.item);
-    this.state = 'starting'; setTimeout(() => this.state = 'running', 2000);
-  }
+  start() { this.emitEvent('START'); }
+  restart() { this.emitEvent('RESET'); }
+  stop() { this.emitEvent('STOP'); }
 
-  restart() {
-    this._ea.publish('proc-reset', this.project || this.item);
-    this.state = 'stopping'; setTimeout(() => this.state = 'starting', 2000); setTimeout(() => this.state = 'running', 4000);
-  }
+  // this.state = 'starting'; setTimeout(() => this.state = 'running', 2000);
+  // this.state = 'stopping'; setTimeout(() => this.state = 'starting', 2000); setTimeout(() => this.state = 'running', 4000);
+  // this.state = 'stopping'; setTimeout(() => this.state = 'idle', 2000);
 
-  stop() {
-    this._ea.publish('proc-stop', this.project || this.item);   
-    this.state = 'stopping'; setTimeout(() => this.state = 'idle', 2000);
+  private emitEvent(name: string) {
+    this._ea.publish((this.project ? 'PROJECT' : 'PROC') + '_' + name, this.project || this.item);
   }
 } 

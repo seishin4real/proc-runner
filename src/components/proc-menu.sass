@@ -8,8 +8,13 @@
   animation: spin 1000ms linear infinite
 
 .proc-menu
+  display: flex
+  flex-flow: row nowrap
+  justify-content: space-between
   &.item
     border-bottom: 1px dotted lighten($primary, .2)
+  > div
+    flex: 0 0 auto
   .icon
     width: 1rem !important
     height: 1rem !important
@@ -25,7 +30,7 @@
     &.pm-stopping
       fill: red
       +spin
-  .level-left .icon
+  .title .icon
     margin-right: 3px
   .button
     padding: 0 0.75rem
@@ -36,5 +41,5 @@
       background: none
       svg.icon
         fill: $accent
-    &.isAll svg.icon
+    &.isBatch svg.icon
       fill: $warning

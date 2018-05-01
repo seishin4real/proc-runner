@@ -1,32 +1,32 @@
 <template>
-  <div class="proc-menu level ${project ? 'project': 'item'}">
-    <div class="level-left">
-      <svg if.bind="item" viewBox="0 0 16 16" class="icon pm-${state}"><use xlink:href="dist/icons.svg#icon-${state === 'idle' || state === 'running' ? 'switch': 'spinner'}"></use></svg>
+  <div class="proc-menu ${project ? 'project': 'item'}">
+    <div>
+      <svg if.bind="item" viewBox="0 0 16 16" class="icon pm-${state}">
+        <use xlink:href="dist/icons.svg#icon-${state === 'idle' || state === 'running' ? 'switch': 'spinner'}"></use>
+      </svg>
       ${project ? project.title : item.title}
     </div>
-    <div class="level-right">
-      <div class="field has-addons">
-        <p class="control" if.bind="item">
-          <a class="button is-small ${isAll ? 'isAll': ''}" title="Included in all" click.delegate="toggleAll()">
-            <svg viewBox="0 0 16 16" class="icon"><use xlink:href="dist/icons.svg#icon-radio-${isAll ? 'checked': 'unchecked'}"></use></svg>
-          </a>
-        </p>
-        <p class="control">
-          <a class="button is-small" title="Start" click.delegate="start()">
-            <svg viewBox="0 0 16 16" class="icon"><use xlink:href="dist/icons.svg#icon-start"></use></svg>
-          </a>
-        </p>
-        <p class="control">
-          <a class="button is-small" title="Restart" click.delegate="restart()">
-            <svg viewBox="0 0 16 16" class="icon"><use xlink:href="dist/icons.svg#icon-reset"></use></svg>
-          </a>
-        </p>
-        <p class="control">
-          <a class="button is-small" title="Stop" click.delegate="stop()">
-            <svg viewBox="0 0 16 16" class="icon"><use xlink:href="dist/icons.svg#icon-stop"></use></svg>
-          </a>
-        </p>
-      </div>
+    <div class="field has-addons">
+      <p class="control" if.bind="item">
+        <a class="button is-small ${item.isBatch ? 'isBatch': ''}" title="Included in batch" click.delegate="toggleIsBatch()">
+          <icon hash="radio-${(item.isBatch ? 'checked' : 'unchecked')}"></icon>
+        </a>
+      </p>
+      <p class="control">
+        <a class="button is-small" title="Start" click.delegate="start()">
+          <icon hash="start"></icon>
+        </a>
+      </p>
+      <p class="control">
+        <a class="button is-small" title="Restart" click.delegate="restart()">
+          <icon hash="reset"></icon>
+        </a>
+      </p>
+      <p class="control">
+        <a class="button is-small" title="Stop" click.delegate="stop()">
+          <icon hash="stop"></icon>
+        </a>
+      </p>
     </div>
   </div>
 </template>

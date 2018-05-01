@@ -1,15 +1,16 @@
 const electron = require('electron');
 const BrowserWindow = electron.BrowserWindow;
 const path = require('path');
-const Store = require('./src/store.js');
+const Store = require('./src/store.electron.js');
 
 require('electron-reload')(path.join(__dirname, 'dist'), { electron: path.join(__dirname, 'node_modules', '.bin', 'electron.cmd') });
 const app = electron.app
 
 const store = new Store({
-  configName: 'user-preferences',
+  configName: 'user-data',
   defaults: {
-    windowBounds: { width: 800, height: 600 }
+    windowBounds: { width: 800, height: 600 },
+    projects: []
   }
 });
 
