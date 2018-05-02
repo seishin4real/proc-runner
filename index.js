@@ -23,12 +23,13 @@ app.on('ready', function () {
   let { width, height } = store.get('windowBounds');
 
   var mainWindow = new BrowserWindow({
+    webPreferences: { nodeIntegration: true },
     icon: path.join(__dirname, 'dist', 'favicon.ico'),
     width,
     height,
     // frame: false
   });
-
+  mainWindow.setMenu(null);
   mainWindow.on('resize', () => {
     // The event doesn't pass us the window size, so we call the `getBounds` method which returns an object with
     // the height, width, and x and y coordinates.

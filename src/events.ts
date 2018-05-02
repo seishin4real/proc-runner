@@ -6,3 +6,5 @@ export const PROC_RESET = 'PROC_RESET';
 export const PROC_STOP = 'PROC_STOP';
 export const PROJECTS_MODIFIED = 'PROJECTS_MODIFIED';
 export const OUTPUT_INITIALIZED = 'OUTPUT_INITIALIZED';
+export const APP_CLOSING = 'APP_CLOSING';
+export const APP_FINISHED = 'APP_FINISHED';

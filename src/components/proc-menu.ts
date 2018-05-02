@@ -12,9 +12,6 @@ export class ProcMenuComponent {
   @bindable() project: Project;
   @bindable() item: Process;
 
-  state: 'idle' | 'starting' | 'running' | 'stopping' = 'idle';
-
-
   toggleIsBatch() {
     this.item.isBatch = !this.item.isBatch;
     this._ea.publish(events.PROJECTS_MODIFIED);

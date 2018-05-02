@@ -14,4 +14,7 @@ export class ProcsComponent {
   showOutput(p) {
     this._procManager.showProcessOutput(p);
   }
+
+  openConfig () {
+  }
 }

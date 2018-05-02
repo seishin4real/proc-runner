@@ -9,8 +9,8 @@ export class ProcOutputComponent {
     ea.publish(OUTPUT_INITIALIZED, this);
   }
 
-  current: Process = null;
   procs: { [key: string]: Process } = {};
+  private current: Process = null;
 
   focus(process: Process): void {
     let po = this.procs[process.id];

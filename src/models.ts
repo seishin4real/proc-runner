@@ -1,3 +1,5 @@
+import { ChildProcess } from 'child_process';
+
 export interface Project {
   id: string;
   title: string;
@@ -7,16 +9,22 @@ export interface Process {
   id: string;
   title: string;
   command: string;
+  args: string;
+  path: string;
   isBatch: boolean;
   meta?: ProcessMeta;
 }
-export enum ProcState {
-  Idle,
-  Starting,
-  Running,
-  Stopping
-}
+export type ProcStateStrings = 'idle' | 'starting' | 'running' | 'stopping';
+
+export const ProcState = {
+  idle: 'idle',
+  starting: 'starting',
+  running: 'running',
+  stopping: 'stopping',
+};
+
 export interface ProcessMeta {
-  state: ProcState;
-  buffer?: string;
+  state: ProcStateStrings| string ;
+  buffer: string[];
+  proc?: ChildProcess;
 }

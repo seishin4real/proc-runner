@@ -1,15 +1,19 @@
 procs
-  display: block
   min-width: 300px
   width: 300px
   background: black
   min-height: 100vh
+  display: flex
+  flex-flow: column nowrap
   aside
     padding: 1rem
+    flex-grow: 1
     .button.is-small
       font-size: 0.65rem
+  aside + div
+    padding: 1rem
   .menu-list
-    border-left: 1px solid #dbdbdb
+    border-left: 1px solid $menu-label-color
     padding-left: 0.75rem
     li
       cursor: pointer

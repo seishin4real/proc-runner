@@ -1,8 +1,8 @@
 <template>
   <div class="proc-menu ${project ? 'project': 'item'}">
     <div>
-      <svg if.bind="item" viewBox="0 0 16 16" class="icon pm-${state}">
-        <use xlink:href="dist/icons.svg#icon-${state === 'idle' || state === 'running' ? 'switch': 'spinner'}"></use>
+      <svg if.bind="item" viewBox="0 0 16 16" class="icon pm-${item.meta.state}">
+        <use xlink:href="dist/icons.svg#icon-${item.meta.state === 'idle' || item.meta.state === 'running' ? 'switch': 'spinner'}"></use>
       </svg>
       ${project ? project.title : item.title}
     </div>

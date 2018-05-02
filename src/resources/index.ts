@@ -5,3 +5,5 @@ export function configure(config: FrameworkConfiguration) {
     PLATFORM.moduleName('./elements/icon')
   ]);
 }
+
+export * from './utils';
