@@ -1,0 +1,11 @@
+<template>
+  
+    <b-modal title="${mode} exercise">
+      <!-- <exercise-edit-form model.bind="model"></exercise-edit-form> -->
+      <footer slot="footer">
+        <button class="button" click.delegate="cancel()">Cancel</button>
+        <button class="button is-accent" click.delegate="save()">Save</button>
+      </footer>
+    </b-modal>
+  </template>
+  

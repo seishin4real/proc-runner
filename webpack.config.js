@@ -76,7 +76,8 @@ module.exports = ({ production, server, extractCss, coverage, analyze } = {}) =>
           : ['style-loader', 'css-loader', 'sass-loader']
       },
       { test: /\.html$/i, loader: 'html-loader' },
-      { test: /\.tsx?$/, exclude: /node_modules/, loader: 'ts-loader' },
+      { test: /\.tsx?$/, loader: 'ts-loader' },
+      // { test: /\.tsx?$/, exclude: /node_modules/, loader: 'ts-loader' },
       { test: /\.json$/i, loader: 'json-loader' },
       // use Bluebird as the global Promise implementation:
       { test: /[\/\\]node_modules[\/\\]bluebird[\/\\].+\.js$/, loader: 'expose-loader?Promise' },
