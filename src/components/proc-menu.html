@@ -1,8 +1,8 @@
 <template>
   <div class="proc-menu ${project ? 'project': 'proc'}">
-    <div>
+    <div class="proc-title">
       <proc-icon if.bind="proc" state.to-view="proc.meta.state"></proc-icon>
-      ${project ? project.title : proc.title}
+      <span>${project ? project.title : proc.title}</span>
     </div>
     <div class="field has-addons">
       <p class="control" if.bind="proc">

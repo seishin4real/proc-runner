@@ -1,3 +1,5 @@
+body, html
+  overflow: hidden
 /* Let's get this party started */
 ::-webkit-scrollbar
     width: 12px
@@ -54,3 +56,16 @@ body
   > proc-output
     flex: 1 1 auto
 
+.proc-icon
+  fill: $primary !important
+  transition: fill 0.5s
+  &.pm-idle
+    fill: lighten($primary, .2)
+  &.pm-starting
+    fill: orange !important
+    +spin
+  &.pm-running
+    fill: green !important
+  &.pm-stopping
+    fill: red !important
+    +spin

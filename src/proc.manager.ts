@@ -24,9 +24,9 @@ export class ProcManager {
     _ea.subscribe(events.PROC_RESET, this.procReset.bind(this));
     _ea.subscribe(events.PROC_STOP, this.procStop.bind(this));
     _ea.subscribe(events.PROJECTS_MODIFIED, this.projectsModified.bind(this));
+    _ea.subscribe(events.APP_CLOSING, this.killProcesses.bind(this));
 
     _ea.subscribeOnce(events.OUTPUT_INITIALIZED, output => this._output = output);
-    _ea.subscribeOnce(events.APP_CLOSING, this.killProcesses.bind(this));
   }
 
   projects: Project[];

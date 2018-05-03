@@ -1,0 +1,26 @@
+proc-output
+  font-family: monospace
+  padding: 0.5rem
+  max-height: 100vh
+  overflow: hidden
+  > div
+    display: flex
+    flex-direction: column
+    height: 100%
+  .box
+    flex-shrink: 0
+    display: inline-flex
+    .icon
+      width: 64px
+      height: 64px
+    .k
+      color: $warning
+    strong
+      font-size: 1.2rem
+  section
+    font-size: 0.8rem
+    overflow-y: scroll
+    flex-grow: 1
+  .notification
+    padding: 0.15rem 0.5rem
+    margin-top: 0.3rem

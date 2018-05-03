@@ -1,37 +1,21 @@
-@keyframes spin
-  0%
-    transform: rotate(0deg)
-  100%
-    transform: rotate(359deg)
-
-=spin
-  animation: spin 1000ms linear infinite
-
 .proc-menu
   display: flex
   flex-flow: row nowrap
   justify-content: space-between
+  .proc-title
+    display: flex
+    align-items: center
+    flex-flow: row nowrap
+    span
+      padding-left: 0.5rem 
   &.proc
     border-bottom: 1px dotted lighten($primary, .2)
   > div
     flex: 0 0 auto
   .icon
-    width: 1rem !important
-    height: 1rem !important
+    width: 1rem
+    height: 1rem
     fill: $primary
-    transition: fill 0.5s
-    &.pm-idle
-      fill: lighten($primary, .2)
-    &.pm-starting
-      fill: orange
-      +spin
-    &.pm-running
-      fill: green
-    &.pm-stopping
-      fill: red
-      +spin
-  .title .icon
-    margin-right: 3px
   .button
     padding: 0 0.75rem
     display: inline-flex

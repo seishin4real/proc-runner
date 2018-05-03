@@ -1,9 +1,28 @@
 <template>
-  <h3>
-    <proc-icon state.to-view="proc.meta.state"></proc-icon>
-    ${proc.title}
-  </h3>
-  <div repeat.for="b of proc.meta.buffer">
-    <div innerhtml.to-view="b"></div>
+  <div if.bind="proc">
+    <div class="box">
+      <article class="media">
+        <div class="media-left">
+          <figure class="image is-64x64">
+            <proc-icon state.to-view="proc.meta.state"></proc-icon>
+          </figure>
+        </div>
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <strong class="k">${proc.title}</strong>
+              <small> (${proc.meta.state})</small>
+              <br>
+              Path: <span class="k">${proc.path}</span><br>
+              Command: <span class="k">${proc.command | removeCmd} ${proc.args}</span>
+            </p>
+          </div>
+        </div>
+      </article>
+    </div>
+    
+    <section>
+      <div repeat.for="b of proc.meta.buffer" innerhtml.to-view="b"></div>
+    </section>
   </div>
 </template>

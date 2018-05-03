@@ -20,7 +20,7 @@ export class ProcOutputComponent {
     console.log('message', message);
 
     if (type === MessageType.info) {
-      proc.meta.buffer.push(`<h3>${message}</h3>`);
+      proc.meta.buffer.push(`<h4 class="title is-4">${message}</h4>`);
     } else if (type === MessageType.data) {
       proc.meta.buffer.push('<div class="notification is-primary">' + message.replace(/\r\n/ig, '<br>') + '</div>');
     } else if (type === MessageType.data_error) {
