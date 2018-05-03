@@ -134,15 +134,16 @@ export class ProcManager {
     cmd.stdout.on('data', (data: Uint8Array) => {
       const str = data.toString();
       this._output.appendProcBuffer(proc, MessageType.data, str);
-
-      if (str.indexOf('Running at http://localhost') != -1) {
+      
+      if (str.indexOf(proc.startMarker) != -1) {
         proc.meta.state = ProcState.running;
-      }//todo move & change (idea: proc started string from config)
+        this._output.appendProcBuffer(proc, MessageType.success, 'Process is running.');
+      }
     });
 
     cmd.stderr.on('data', (data: Uint8Array) => {
       const str = data.toString();
-      this._output.appendProcBuffer(proc, MessageType.data_error, data);
+      this._output.appendProcBuffer(proc, MessageType.error, str);
     });
   }
 
@@ -152,7 +153,7 @@ export class ProcManager {
   }
 
   private procStop(proc: Process): Promise<void> {
-    if (!proc.meta.proc) { return Promise.reject('no-proc'); }
+    if (!proc.meta.proc) { return Promise.resolve(); }
 
     return new Promise((resolve, reject) => {
       proc.meta.state = ProcState.stopping;

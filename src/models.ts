@@ -11,6 +11,8 @@ export interface Process {
   command: string;
   args: string;
   path: string;
+  startMarker: string;
+  errorMarker: string;
   isBatch: boolean;
   meta?: ProcessMeta;
 }
@@ -31,5 +33,7 @@ export interface ProcessMeta {
 
 export enum MessageType {
   info,
-  data, data_error
+  success,
+  warning,
+  data, error
 }
