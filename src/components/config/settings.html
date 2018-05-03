@@ -1,3 +1,15 @@
 <template>
-  settings works!
+  <b-field-h label="Notfications location">
+    <div class="is-fullwidth select">
+      <select value.two-way="model.notifications.position" dir="rtl">
+        <option value="top left">Top left</option>
+        <option value="top right">Top right</option>
+        <option value="bottom left">Bottom left</option>
+        <option value="bottom right">Bottom right</option>
+      </select>
+    </div>
+  </b-field-h>
+  <b-field-h label="Notification timeout [s]">
+    <b-input value.two-way="model.notifications.timeout | number" type="number" is-right></b-input>
+  </b-field-h>
 </template>

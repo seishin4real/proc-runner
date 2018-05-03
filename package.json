@@ -23,6 +23,7 @@
     "electron-reload": "^1.2.2",
     "guid-typescript": "^1.0.7",
     "lodash": "^4.17.10",
+    "numeral": "^2.0.6",
     "ps-tree": "^1.1.0"
   },
   "peerDependencies": {},

@@ -5,6 +5,7 @@ export function configure(config: FrameworkConfiguration) {
     PLATFORM.moduleName('./elements/icon'),
     PLATFORM.moduleName('./elements/proc-icon'),
     PLATFORM.moduleName('./value-converters/remove-cmd'),
+    PLATFORM.moduleName('./value-converters/number'),
   ]);
 }
 
