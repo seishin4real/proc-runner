@@ -11,7 +11,7 @@ export function configure(aurelia: Aurelia) {
     .standardConfiguration()
     .plugin(PLATFORM.moduleName('aurelia-dialog'))
     .feature(PLATFORM.moduleName('resources/index'))
-    .feature(PLATFORM.moduleName('aurelia-bulma-bridge/src/index'))
+    .feature(PLATFORM.moduleName('aurelia-bulma-bridge/index'))
     ;
 
   // Uncomment the line below to enable animation.

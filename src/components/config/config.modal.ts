@@ -5,6 +5,8 @@ import { customElement } from 'aurelia-framework';
 export class ConfigModalComponent {
   constructor(private _dialogController: DialogController) { }
 
+  display = 'settings';
+
   async save() {
     this._dialogController.ok();
   }

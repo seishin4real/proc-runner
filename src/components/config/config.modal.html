@@ -1,11 +1,31 @@
 <template>
-  
-    <b-modal title="${mode} exercise">
-      <!-- <exercise-edit-form model.bind="model"></exercise-edit-form> -->
-      <footer slot="footer">
-        <button class="button" click.delegate="cancel()">Cancel</button>
-        <button class="button is-accent" click.delegate="save()">Save</button>
-      </footer>
-    </b-modal>
-  </template>
-  
+  <require from="./projects"></require>
+  <require from="./settings"></require>
+
+  <b-modal>
+    <div slot="header">
+      <div class="tabs is-toggle is-fullwidth flex-grow">
+        <ul>
+          <li class.bind="display === 'settings' ? 'is-active' : ''">
+            <a click.delegate="display = 'settings'">
+              <icon fa="cog"></icon>
+              <span>Settings</span>
+            </a>
+          </li>
+          <li class.bind="display === 'projects' ? 'is-active' : ''">
+            <a click.delegate="display = 'projects'">
+              <icon fa="projects"></icon>
+              <span>Projects</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <projects if.bind="display === 'projects'"></projects>
+    <settings if.bind="display === 'settings'"></settings>
+    <footer slot="footer">
+      <button class="button" click.delegate="cancel()">Cancel</button>
+      <button class="button is-accent" click.delegate="save()">Save</button>
+    </footer>
+  </b-modal>
+</template>

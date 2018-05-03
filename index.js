@@ -21,9 +21,10 @@ app.on('ready', function () {
     webPreferences: { nodeIntegration: true },
     icon: path.join(__dirname, 'dist', 'favicon.ico'),
     width,
-    height,
+    height
     // frame: false
   });
+  mainWindow.webContents.openDevTools();
   mainWindow.setMenu(null);
   mainWindow.on('resize', () => {
     // The event doesn't pass us the window size, so we call the `getBounds` method which returns an object with
