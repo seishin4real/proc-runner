@@ -4,6 +4,7 @@ import { autoinject } from 'aurelia-framework';
 import { ChildProcess } from 'child_process';
 import { ProcOutputComponent } from 'components/proc-output';
 import { Guid } from 'guid-typescript';
+import { compact as _compact, flatten as _flatten } from 'lodash';
 import { MessageType, Process, ProcState, ProcStateStrings, Project } from 'models';
 import { Store } from 'store';
 
@@ -99,28 +100,15 @@ export class ProcManager {
 
   private killProcesses() {
     let hadChildren = false;
-    for (let p = 0; p < this.projects.length; p++) {
-      const project = this.projects[p];
 
-      if (!this.projectHasItems(project)) { continue; }
+    const kills = _flatten(_compact(this.projects.map(project => !this.projectHasItems(project) ? null : project.procs.map(proc => {
+      if (!proc.meta.proc) { return Promise.resolve(); }
+      return this.procStop(proc);
+    }))));
 
-      hadChildren = true;
-      for (let i = 0; i < project.procs.length; i++) {
-        this.procStop(project.procs[i]);//todo przerobić na promisy. Promise.all(this._ea.publish(events.APP_FINISHED))
-      }
-
-      // for (let i = 0; i < this.projects.length; i++) {
-      //   const { procs } = this.projects[i];
-
-
-      //   const { meta } = this.projects[i].procs;
-      //   const { pid } = meta.proc;
-      //   this.killProc(pid, () => this._ea.publish(events.APP_FINISHED));
-      // }
-    }
-    if (!hadChildren) {
+    Promise.all(kills).then(() => {
       this._ea.publish(events.APP_FINISHED);
-    }
+    }).catch(e => console.log(e));
   }
 
   //#endregion
@@ -163,14 +151,18 @@ export class ProcManager {
     this.procStart(proc);
   }
 
-  private procStop(proc: Process) {
-    if (!proc.meta.proc) { return; }
-    
-    proc.meta.state = ProcState.stopping;
-    this.killProc(proc.meta.proc.pid);
-    this._output.appendProcBuffer(proc, MessageType.info, 'Process closed.');
-    proc.meta.state = ProcState.idle;
-    proc.meta.proc = null;
+  private procStop(proc: Process): Promise<void> {
+    if (!proc.meta.proc) { return Promise.reject('no-proc'); }
+
+    return new Promise((resolve, reject) => {
+      proc.meta.state = ProcState.stopping;
+      this.killProc(proc.meta.proc.pid, () => {
+        this._output.appendProcBuffer(proc, MessageType.info, 'Process closed.');
+        proc.meta.state = ProcState.idle;
+        proc.meta.proc = null;
+        resolve();
+      });
+    });
   }
 
   private killProc(pid, callback = () => { }) {
