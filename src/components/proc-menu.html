@@ -1,15 +1,13 @@
 <template>
-  <div class="proc-menu ${project ? 'project': 'item'}">
+  <div class="proc-menu ${project ? 'project': 'proc'}">
     <div>
-      <svg if.bind="item" viewBox="0 0 16 16" class="icon pm-${item.meta.state}">
-        <use xlink:href="dist/icons.svg#icon-${item.meta.state === 'idle' || item.meta.state === 'running' ? 'switch': 'spinner'}"></use>
-      </svg>
-      ${project ? project.title : item.title}
+      <proc-icon if.bind="proc" state.to-view="proc.meta.state"></proc-icon>
+      ${project ? project.title : proc.title}
     </div>
     <div class="field has-addons">
-      <p class="control" if.bind="item">
-        <a class="button is-small ${item.isBatch ? 'isBatch': ''}" title="Included in batch" click.delegate="toggleIsBatch()">
-          <icon hash="radio-${(item.isBatch ? 'checked' : 'unchecked')}"></icon>
+      <p class="control" if.bind="proc">
+        <a class="button is-small ${proc.isBatch ? 'isBatch': ''}" title="Included in batch" click.delegate="toggleIsBatch()">
+          <icon hash="radio-${(proc.isBatch ? 'checked' : 'unchecked')}"></icon>
         </a>
       </p>
       <p class="control">

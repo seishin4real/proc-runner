@@ -3,7 +3,7 @@ import { ChildProcess } from 'child_process';
 export interface Project {
   id: string;
   title: string;
-  items?: Process[];
+  procs?: Process[];
 }
 export interface Process {
   id: string;
@@ -27,4 +27,9 @@ export interface ProcessMeta {
   state: ProcStateStrings| string ;
   buffer: string[];
   proc?: ChildProcess;
+}
+
+export enum MessageType {
+  info,
+  data, data_error
 }

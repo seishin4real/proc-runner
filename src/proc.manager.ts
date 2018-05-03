@@ -4,7 +4,7 @@ import { autoinject } from 'aurelia-framework';
 import { ChildProcess } from 'child_process';
 import { ProcOutputComponent } from 'components/proc-output';
 import { Guid } from 'guid-typescript';
-import { Process, ProcState, ProcStateStrings, Project } from 'models';
+import { MessageType, Process, ProcState, ProcStateStrings, Project } from 'models';
 import { Store } from 'store';
 
 const anyWin = window as any;
@@ -38,7 +38,7 @@ export class ProcManager {
   }
 
   showProcessOutput(process: Process): void {
-    this._output.focus(process);
+    this._output.proc = process;
   }
 
   private projectsModified() {
@@ -49,23 +49,23 @@ export class ProcManager {
 
   //#region project 
 
-  private projectStart(item: Project) { this.processBatchProject(item, 'Start'); }
+  private projectStart(project: Project) { this.processBatchProject(project, 'Start'); }
 
-  private projectReset(item: Project) { this.processBatchProject(item, 'Reset'); }
+  private projectReset(project: Project) { this.processBatchProject(project, 'Reset'); }
 
-  private projectStop(item: Project) { this.processBatchProject(item, 'Stop'); }
+  private projectStop(project: Project) { this.processBatchProject(project, 'Stop'); }
 
-  private processBatchProject(item: Project, action: string) {
-    if (!this.projectHasItems(item)) { return; }
+  private processBatchProject(project: Project, action: string) {
+    if (!this.projectHasItems(project)) { return; }
 
-    for (let i = 0; i < item.items.length; i++) {
-      const proc = item.items[i];
+    for (let i = 0; i < project.procs.length; i++) {
+      const proc = project.procs[i];
       if (proc.isBatch) { this['proc' + action](proc); }
     }
   }
 
-  private projectHasItems(item: Project): boolean {
-    if (item.items && item.items.length) {
+  private projectHasItems(project: Project): boolean {
+    if (project.procs && project.procs.length) {
       return true;
     }
     //todo show info - no proc to run
@@ -73,39 +73,104 @@ export class ProcManager {
   }
 
   private initializeMeta(project: Project) {
-    if (project.items && project.items.length) {
-      for (let i = 0; i < project.items.length; i++) {
-        project.items[i].meta = {
-          state: ProcState.idle,
-          buffer: []
-        };
-      }
-    }
+    if (!project.procs || !project.procs.length) { return project; }
 
+    for (let i = 0; i < project.procs.length; i++) {
+      project.procs[i].meta = {
+        state: ProcState.idle,
+        buffer: []
+      };
+    }
+    // console.log('project', project);
     return project;
   }
 
   private removeMeta(projects: Project[]) {
     for (let p = 0; p < projects.length; p++) {
-      const { items } = projects[p];
-      if (!items || !items.length) { continue; }
+      const { procs } = projects[p];
+      if (!procs || !procs.length) { continue; }
 
-      for (let i = 0; i < items.length; i++) {
-        const item = items[i];
-        delete item.meta;
+      for (let i = 0; i < procs.length; i++) {
+        const proc = procs[i];
+        delete proc.meta;
       }
     }
   }
 
   private killProcesses() {
-    const procs = this._output.procs;
-    const keys = Object.keys(procs);
+    let hadChildren = false;
+    for (let p = 0; p < this.projects.length; p++) {
+      const project = this.projects[p];
 
-    for (let i = 0; i < keys.length; i++) {
-      const { meta } = procs[keys[i]];
-      const { pid } = meta.proc;
-      this.killProc(pid, () => this._ea.publish(events.APP_FINISHED));
+      if (!this.projectHasItems(project)) { continue; }
+
+      hadChildren = true;
+      for (let i = 0; i < project.procs.length; i++) {
+        this.procStop(project.procs[i]);//todo przerobić na promisy. Promise.all(this._ea.publish(events.APP_FINISHED))
+      }
+
+      // for (let i = 0; i < this.projects.length; i++) {
+      //   const { procs } = this.projects[i];
+
+
+      //   const { meta } = this.projects[i].procs;
+      //   const { pid } = meta.proc;
+      //   this.killProc(pid, () => this._ea.publish(events.APP_FINISHED));
+      // }
     }
+    if (!hadChildren) {
+      this._ea.publish(events.APP_FINISHED);
+    }
+  }
+
+  //#endregion
+
+  //#region process
+
+  private procStart(proc: Process) {
+    if (proc.meta.proc) {
+      this._output.appendProcBuffer(proc, MessageType.info, 'Process already running.');
+      return;
+    }
+    this._output.proc = proc;
+    proc.meta.state = ProcState.starting;
+    // this._output.appendProcBuffer(item, MessageType.info, `Running ${item.command} ${item.args} @ ${item.path}`);
+
+    const cmd = <ChildProcess>spawn(proc.command, proc.args ? proc.args.split(' ') : [], {
+      cwd: proc.path,
+      windowsHide: true,
+      detached: false
+    });
+    proc.meta.proc = cmd;
+
+    cmd.stdout.on('data', (data: Uint8Array) => {
+      const str = data.toString();
+      this._output.appendProcBuffer(proc, MessageType.data, str);
+
+      if (str.indexOf('Running at http://localhost') != -1) {
+        proc.meta.state = ProcState.running;
+      }//todo move & change (idea: proc started string from config)
+    });
+
+    cmd.stderr.on('data', (data: Uint8Array) => {
+      const str = data.toString();
+      this._output.appendProcBuffer(proc, MessageType.data_error, data);
+    });
+  }
+
+  private procReset(proc: Process) {
+    this.procStop(proc);
+    this.procStart(proc);
+  }
+
+  private procStop(proc: Process) {
+    if (!proc.meta.proc) { return; }
+    
+    proc.meta.state = ProcState.stopping;
+    this.killProc(proc.meta.proc.pid);
+    this._output.appendProcBuffer(proc, MessageType.info, 'Process closed.');
+    proc.meta.state = ProcState.idle;
+    proc.meta.proc = null;
   }
 
   private killProc(pid, callback = () => { }) {
@@ -121,63 +186,4 @@ export class ProcManager {
   };
 
   //#endregion
-
-  //#region process
-
-  private procStart(item: Process) {
-    this._output.focus(item);
-    item.meta.state = ProcState.starting;
-    this.appendProcBuffer(item, MessageType.info, `Starting ${item.command} ${item.args} @ ${item.path}`);
-    // setTimeout(() => this.spawnProcess(item), 0);
-    const cmd = <ChildProcess>spawn(item.command, item.args ? item.args.split(' ') : [], {
-      cwd: item.path,
-      windowsHide: true,
-      detached: false
-    });
-    item.meta.proc = cmd;
-
-    cmd.stdout.on('data', (data: Uint8Array) => {
-      const str = data.toString();
-      this.appendProcBuffer(item, MessageType.data, str);
-
-      if (str.indexOf('Running at http://localhost') != -1) {
-        item.meta.state = ProcState.running;
-      }
-    });
-
-    cmd.stderr.on('data', (data) => {
-      this.appendProcBuffer(item, MessageType.data_error, data);
-    });
-  }
-
-  private procReset(item: Process) {
-    this.procStop(item);
-    this.procStart(item);
-  }
-
-  private procStop(item: Process) {
-    item.meta.state = ProcState.stopping;
-    this.killProc(item.meta.proc.pid);
-    this.appendProcBuffer(item, MessageType.info, 'Process closed.');
-    item.meta.state = ProcState.idle;
-  }
-
-  private appendProcBuffer(proc: Process, type: MessageType, message: any) {
-    console.log('message', message);
-    if (type === MessageType.info) {
-      proc.meta.buffer.push(`<h3>${message}</h3>`);
-    } else if (type === MessageType.data) {
-      proc.meta.buffer.push('<div class="notification is-primary">' + message.replace(/\r\n/ig, '<br>') + '</div>');
-    } else if (type === MessageType.data_error) {
-      proc.meta.buffer.push('<div class="notification is-danger">' + message.replace(/\r\n/ig, '<br>') + '</div>');
-    }
-  }
-
-  //#endregion
-
-}
-
-enum MessageType {
-  info,
-  data, data_error
 }

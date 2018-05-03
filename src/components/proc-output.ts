@@ -1,7 +1,7 @@
 import { OUTPUT_INITIALIZED } from '../events';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { customElement } from 'aurelia-framework';
-import { Process } from 'models';
+import { MessageType, Process } from 'models';
 
 @customElement('proc-output')
 export class ProcOutputComponent {
@@ -9,13 +9,23 @@ export class ProcOutputComponent {
     ea.publish(OUTPUT_INITIALIZED, this);
   }
 
-  procs: { [key: string]: Process } = {};
-  private current: Process = null;
+  proc: Process = null;
 
-  focus(process: Process): void {
-    let po = this.procs[process.id];
-    if (!po) { this.procs[process.id] = po = process; }
-
-    this.current = po;
+  procChanged(v: Process) {
+    console.log('v', v);
+    
   }
+  
+  public appendProcBuffer(proc: Process, type: MessageType, message: any) {
+    console.log('message', message);
+
+    if (type === MessageType.info) {
+      proc.meta.buffer.push(`<h3>${message}</h3>`);
+    } else if (type === MessageType.data) {
+      proc.meta.buffer.push('<div class="notification is-primary">' + message.replace(/\r\n/ig, '<br>') + '</div>');
+    } else if (type === MessageType.data_error) {
+      proc.meta.buffer.push('<div class="notification is-danger">' + message.replace(/\r\n/ig, '<br>') + '</div>');
+    }
+  }
+
 }

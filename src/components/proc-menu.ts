@@ -10,10 +10,10 @@ export class ProcMenuComponent {
   constructor(private _ea: EventAggregator) { }
 
   @bindable() project: Project;
-  @bindable() item: Process;
+  @bindable() proc: Process;
 
   toggleIsBatch() {
-    this.item.isBatch = !this.item.isBatch;
+    this.proc.isBatch = !this.proc.isBatch;
     this._ea.publish(events.PROJECTS_MODIFIED);
   }
   start() { this.emitEvent('START'); }
@@ -25,6 +25,6 @@ export class ProcMenuComponent {
   // this.state = 'stopping'; setTimeout(() => this.state = 'idle', 2000);
 
   private emitEvent(name: string) {
-    this._ea.publish((this.project ? 'PROJECT' : 'PROC') + '_' + name, this.project || this.item);
+    this._ea.publish((this.project ? 'PROJECT' : 'PROC') + '_' + name, this.project || this.proc);
   }
 } 

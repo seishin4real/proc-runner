@@ -1,6 +1,9 @@
 <template>
-  <h3> ${current.title} </h3>
-  <div repeat.for="b of current.meta.buffer">
+  <h3>
+    <proc-icon state.to-view="proc.meta.state"></proc-icon>
+    ${proc.title}
+  </h3>
+  <div repeat.for="b of proc.meta.buffer">
     <div innerhtml.to-view="b"></div>
   </div>
 </template>

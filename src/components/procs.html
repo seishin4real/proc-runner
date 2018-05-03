@@ -6,8 +6,8 @@
         <proc-menu project.bind="project"></proc-menu>
       </p>
       <ul class="menu-list">
-        <li repeat.for="item of project.items" click.delegate="showOutput(item)">
-          <proc-menu item.bind="item"></proc-menu>
+        <li repeat.for="proc of project.procs" click.delegate="showOutput(proc)">
+          <proc-menu proc.bind="proc"></proc-menu>
         </li>
       </ul>
     </template>
