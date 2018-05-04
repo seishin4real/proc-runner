@@ -17,7 +17,7 @@ $primary-dark-invert: findColorInvert($primary-invert) !default
 $accent: $purple !default
 $accent-invert: findColorInvert($accent) !default
 
-$addColors: ( "primary-dark":($primary-dark, $primary-dark-invert), "accent": ($accent, $accent-invert) )
+$addColors: ( "primary-dark":($primary-dark, $primary-dark-invert), "accent": ($accent, $accent-invert), "orange": ($orange, $orange-invert) )
 $colors: map-merge($colors, $addColors);
 
 //elements
@@ -26,6 +26,8 @@ $input-background-color: $primary !default
 $input-border-color: $primary-dark !default
 $input-shadow: inset 0 1px 2px rgba($black, 0.1) !default
 $input-focus-border-color: $grey !default
+
+$box-background-color: $grey-dark
 
 // $section-padding: 1rem !default
 // $section-padding-medium: 2rem 1.5rem !default
@@ -44,7 +46,9 @@ $input-focus-border-color: $grey !default
 @import './global/layout.sass'
 @import './global/ux.sass'
 @import './global/flex.sass'
+@import './global/borders.sass'
 
 @import '../components/_index.sass'
 // @import '../pages/_index.sass'
+@import '../resources/components/_index.sass'
 @import '../resources/elements/_index.sass'

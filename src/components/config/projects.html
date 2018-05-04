@@ -1,7 +1,5 @@
 <template>
-  <ul>
-    <li repeat.for="project of model">
-      ${project.title}
-    </li>
-  </ul>
+  <require from="./project-edit"></require>
+  
+  <project-edit repeat.for="project of model" project.bind="project"></project-edit>
 </template>

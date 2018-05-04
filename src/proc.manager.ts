@@ -25,7 +25,7 @@ export class ProcManager {
     _ea.subscribe(events.PROC_RESET, this.procReset.bind(this));
     _ea.subscribe(events.PROC_STOP, this.procStop.bind(this));
     _ea.subscribe(events.PROJECTS_MODIFIED, this.projectsModified.bind(this));
-    _ea.subscribe(events.APP_CLOSING, this.killProcesses.bind(this));
+    _ea.subscribe(events.APP_CLOSING, () => this.killProcesses(() => this._ea.publish(events.APP_FINISHED)));
 
     _ea.subscribeOnce(events.OUTPUT_INITIALIZED, output => this._output = output);
   }
@@ -40,6 +40,17 @@ export class ProcManager {
 
   showProcessOutput(process: Process): void {
     this._output.proc = process;
+  }
+
+  killProcesses(callback: () => void) {
+    let hadChildren = false;
+
+    const kills = _flatten(_compact(this.projects.map(project => !this.projectHasItems(project) ? null : project.procs.map(proc => {
+      if (!proc.meta.proc) { return Promise.resolve(); }
+      return this.procStop(proc);
+    }))));
+
+    Promise.all(kills).then(callback).catch(e => console.log(e));
   }
 
   private projectsModified() {
@@ -98,19 +109,6 @@ export class ProcManager {
     }
   }
 
-  private killProcesses() {
-    let hadChildren = false;
-
-    const kills = _flatten(_compact(this.projects.map(project => !this.projectHasItems(project) ? null : project.procs.map(proc => {
-      if (!proc.meta.proc) { return Promise.resolve(); }
-      return this.procStop(proc);
-    }))));
-
-    Promise.all(kills).then(() => {
-      this._ea.publish(events.APP_FINISHED);
-    }).catch(e => console.log(e));
-  }
-
   //#endregion
 
   //#region process
@@ -134,7 +132,7 @@ export class ProcManager {
     cmd.stdout.on('data', (data: Uint8Array) => {
       const str = data.toString();
       this._output.appendProcBuffer(proc, MessageType.data, str);
-      
+
       if (str.indexOf(proc.startMarker) != -1) {
         proc.meta.state = ProcState.running;
         this._output.appendProcBuffer(proc, MessageType.success, 'Process is running.');

@@ -1,0 +1,26 @@
+<template>
+  <toggle-panel icon="proc" title.bind="proc.title" color="orange">
+    <b-field-h label="Title" size="small">
+      <b-input is-expanded value.two-way="proc.title"></b-input>
+    </b-field-h>
+    <b-field-h label="Command" size="small">
+      <b-input is-expanded value.two-way="proc.command"></b-input>
+    </b-field-h>
+    <b-field-h label="Args" size="small">
+      <b-input is-expanded value.two-way="proc.args"></b-input>
+    </b-field-h>
+    <b-field-h label="Path" size="small">
+      <b-input is-expanded value.two-way="proc.path"></b-input>
+    </b-field-h>
+    <b-field-h label="Start marker" size="small">
+      <b-input is-expanded value.two-way="proc.startMarker"></b-input>
+    </b-field-h>
+    <footer slot="footer">
+      <a href="#" class="card-footer-item">Delete process</a>
+    </footer>
+    <!-- <b-field-h label="errorMarkers">
+              <b-input is-expanded value.two-way="proc.errorMarkers"></b-input>
+            </b-field-h> -->
+
+  </toggle-panel>
+</template>

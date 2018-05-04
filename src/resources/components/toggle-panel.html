@@ -1,0 +1,21 @@
+<template>
+  <div class="card has-border-${color}">
+    <header class="card-header" click.delegate="toggleCollapesed()">
+      <p class="card-header-title has-text-${color}">
+        <icon fa.bind="icon"></icon>
+        ${title}
+      </p>
+      <a href="#" class="card-header-icon" aria-label="more options">
+        <button if.bind="!isCollapsed" class="delete"></button>
+      </a>
+    </header>
+    <div class="card-content ${isCollapsed ? 'is-hidden' : ''}">
+      <div class="content">
+        <slot></slot>
+      </div>
+    </div>
+    <footer class="card-footer ${isCollapsed ? 'is-hidden' : ''}" ref="footer">
+      <slot name="footer"></slot>
+    </footer>
+  </div>
+</template>
