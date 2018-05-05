@@ -1,4 +1,4 @@
-import { APP_CLOSING, APP_FINISHED, PROJECTS_MODIFIED } from './events';
+import { APP_CLOSING, APP_FINISHED } from './events';
 import './styles/index.sass';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject } from 'aurelia-framework';
@@ -9,10 +9,10 @@ const { remote } = (window as any).nodeRequire('electron');
 export class App {
   constructor(ea: EventAggregator) {
     document.addEventListener('keydown', function (e) {
-      if (e.which === 123) {
+      if (e.key === 'Enter') {
         remote.getCurrentWindow().toggleDevTools();
-      } else if (e.which === 116) {
-        location.reload();
+      } else if (e.ctrlKey && e.key === 'r') {
+        location.reload(); //doesn't work
       }
     });
 

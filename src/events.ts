@@ -9,3 +9,7 @@ export const OUTPUT_INITIALIZED = 'OUTPUT_INITIALIZED';
 export const APP_CLOSING = 'APP_CLOSING';
 export const APP_FINISHED = 'APP_FINISHED';
 export const CONFIG_SAVED = 'CONFIG_SAVED';
+export const PROC_MOVED = 'PROC_MOVED';
+export const PROC_DELETED = 'PROC_DELETED';
+export const PROJECT_MOVED = 'PROJECT_MOVED';
+export const PROJECT_DELETED = 'PROJECT_DELETED';

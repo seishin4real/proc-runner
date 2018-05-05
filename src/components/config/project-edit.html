@@ -1,15 +1,28 @@
 <template>
   <require from="./proc-edit"></require>
 
-  <toggle-panel icon="project" title.bind="project.title" color="info">
+  <toggle-panel icon="project" title.bind="project.title" color="info" is-collapsed.two-way="project.meta.isCollapsed">
+
+    <div slot="icons">
+      <a class="card-header-icon" click.delegate="moveUp()" title="Move up">
+        <icon fa="move-up"></icon>
+      </a>
+      <a class="card-header-icon" click.delegate="moveDown()" title="Move down">
+        <icon fa="move-down"></icon>
+      </a>
+      <a class="card-header-icon" click.delegate="addProcess()" title="Add process">
+        <icon fa="plus"></icon>
+      </a>
+      <a class="card-header-icon is-danger" click.delegate="deleteProject()" title="Delete project">
+        <icon fa="trash"></icon>
+      </a>
+    </div>
+
     <b-field-h label="Title" size="small">
       <b-input is-expanded value.two-way="project.title"></b-input>
     </b-field-h>
+
     <proc-edit repeat.for="proc of project.procs" proc.bind="proc"></proc-edit>
-    
-    <footer slot="footer">
-      <a href="#" class="card-footer-item">Add process</a>
-      <a href="#" class="card-footer-item">Delete project</a>
-    </footer>
+
   </toggle-panel>
 </template>

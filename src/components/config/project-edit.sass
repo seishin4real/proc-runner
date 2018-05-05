@@ -4,7 +4,14 @@ project-edit
   
   toggle-panel
     margin: 0.25rem 0
-    
+
+  .card-footer-item
+    background: $dark
+    cursor: pointer
+    transition: background 0.25s ease-in
+    &:hover
+      transition: background 0.15s ease-out
+      background: $primary
+
   svg.icon 
     fill: $info
-    margin-right: 0.5rem

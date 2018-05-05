@@ -21,11 +21,25 @@
         </ul>
       </div>
     </div>
-    <projects if.bind="display === 'projects'" model.bind="projects"></projects>
-    <settings if.bind="display === 'settings'" model.bind="settings"></settings>
+    <div style="min-height: 70vh">
+      <projects if.bind="display === 'projects'" model.bind="projects"></projects>
+      <settings if.bind="display === 'settings'" model.bind="settings"></settings>
+    </div>
     <footer slot="footer">
-      <button class="button" click.delegate="cancel()">Cancel</button>
-      <button class="button is-accent" click.delegate="save()">Save</button>
+      <b-level>
+        <div slot="left">
+          <div class="level-item" if.bind="display === 'projects'">
+            <a class="button is-info is-outlined" click.delegate="addProject()" title="Add project">
+              <icon fa="plus"></icon>
+            </a>
+          </div>
+        </div>
+        <div slot="right">
+          <div class="level-item">
+            <button class="button is-accent" click.delegate="close()">OK</button>
+          </div>
+        </div>
+      </b-level>
     </footer>
   </b-modal>
 </template>

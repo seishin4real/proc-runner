@@ -1,5 +1,4 @@
 import { bindable, customElement } from 'aurelia-framework';
-import { Store } from 'store';
 
 @customElement('settings')
 export class SettingsComponent {
@@ -8,5 +7,5 @@ export class SettingsComponent {
       position: string;
       timeout: number;
     }
-  }
+  };
 }

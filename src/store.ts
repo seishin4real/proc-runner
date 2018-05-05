@@ -8,7 +8,7 @@ export class Store {
     this.path = join(userDataPath, 'user-data.json');
     this.data = this.parseDataFile(this.path, {});
   }
-  
+
   path: string;
   data: any;
 
@@ -16,7 +16,7 @@ export class Store {
     return this.data[key];
   }
   set(key, val) {
-    this.data[key] = val;    
+    this.data[key] = val;
     writeFileSync(this.path, JSON.stringify(this.data));
   }
 

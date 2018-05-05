@@ -4,8 +4,16 @@ import { autoinject } from 'aurelia-framework';
 import { ChildProcess } from 'child_process';
 import { ProcOutputComponent } from 'components/proc-output';
 import { Guid } from 'guid-typescript';
-import { compact as _compact, flatten as _flatten } from 'lodash';
-import { MessageType, Process, ProcState, ProcStateStrings, Project } from 'models';
+import { compact as _compact, find as _find, findIndex as _findIndex, flatten as _flatten } from 'lodash';
+import {
+  MessageType,
+  Process,
+  ProcessMeta,
+  ProcState,
+  Project,
+  ProjectMeta
+  } from 'models';
+import { moveInArray } from 'resources';
 import { Store } from 'store';
 
 const anyWin = window as any;
@@ -28,14 +36,43 @@ export class ProcManager {
     _ea.subscribe(events.APP_CLOSING, () => this.killProcesses(() => this._ea.publish(events.APP_FINISHED)));
 
     _ea.subscribeOnce(events.OUTPUT_INITIALIZED, output => this._output = output);
+
+    _ea.subscribe(events.PROC_MOVED, this.moveProc.bind(this));
+    _ea.subscribe(events.PROC_DELETED, this.deleteProc.bind(this));
+    _ea.subscribe(events.PROJECT_MOVED, this.moveProject.bind(this));
+    _ea.subscribe(events.PROJECT_DELETED, this.deleteProject.bind(this));
   }
 
-  projects: Project[];
   private _output: ProcOutputComponent;
+
+  projects: Project[];
 
   getProjects(): Project[] {
     return this.projects = this._store.get('projects')
       .map(this.initializeMeta.bind(this));
+  }
+
+  addProject() {
+    this.projects.push(<Project>{
+      id: Guid.raw(),
+      title: '',
+      procs: [],
+      meta: this.initializeProjectMeta(null, false)
+    });
+  }
+
+  addProcess(project: Project) {
+    project.procs.push(<Process>{
+      id: Guid.raw(),
+      title: '',
+      command: '',
+      args: '',
+      path: '',
+      startMarker: '',
+      errorMarker: [],
+      isBatch: false,
+      meta: this.initializeProcMeta(null, false)
+    });
   }
 
   showProcessOutput(process: Process): void {
@@ -43,8 +80,6 @@ export class ProcManager {
   }
 
   killProcesses(callback: () => void) {
-    let hadChildren = false;
-
     const kills = _flatten(_compact(this.projects.map(project => !this.projectHasItems(project) ? null : project.procs.map(proc => {
       if (!proc.meta.proc) { return Promise.resolve(); }
       return this.procStop(proc);
@@ -59,7 +94,7 @@ export class ProcManager {
     this._store.set('projects', copy);
   }
 
-  //#region project 
+  //#region project
 
   private projectStart(project: Project) { this.processBatchProject(project, 'Start'); }
 
@@ -85,21 +120,42 @@ export class ProcManager {
   }
 
   private initializeMeta(project: Project) {
+    const isCollapsed = true;
+    this.initializeProjectMeta(project, isCollapsed);
+    project.meta.isCollapsed = isCollapsed;
+
     if (!project.procs || !project.procs.length) { return project; }
 
     for (let i = 0; i < project.procs.length; i++) {
-      project.procs[i].meta = {
-        state: ProcState.idle,
-        buffer: []
-      };
+      this.initializeProcMeta(project.procs[i], isCollapsed);
+      project.procs[i].meta.isCollapsed = isCollapsed;
     }
-    // console.log('project', project);
     return project;
+  }
+
+  private initializeProjectMeta(project: Project, isCollapsed: boolean): ProjectMeta {
+    const m = { isCollapsed };
+
+    if (project) { project.meta = m; }
+    return m;
+  }
+
+  private initializeProcMeta(proc: Process, isCollapsed): ProcessMeta {
+    const m = {
+      state: ProcState.idle,
+      buffer: [],
+      isCollapsed
+    };
+    if (proc) { proc.meta = m; }
+    return m;
   }
 
   private removeMeta(projects: Project[]) {
     for (let p = 0; p < projects.length; p++) {
-      const { procs } = projects[p];
+      const project = projects[p];
+      delete project.meta;
+
+      const { procs } = project;
       if (!procs || !procs.length) { continue; }
 
       for (let i = 0; i < procs.length; i++) {
@@ -109,6 +165,31 @@ export class ProcManager {
     }
   }
 
+  private moveProject({ project, step }) {
+    const pIdx = _findIndex(this.projects, (p: Project) => p.id === project.id);
+
+    if (step === -1 && pIdx === 0) { return; }
+
+    if (step === 1 && pIdx === this.projects.length - 1) { return; }
+
+    moveInArray(this.projects, pIdx, pIdx + step);
+
+    this.projectsModified();
+  }
+  private deleteProject(project) {
+    const pIdx = _findIndex(this.projects, (p: Project) => p.id === project.id);
+
+    this.projects.splice(pIdx, 1);
+  }
+
+  // deleteProject(project: Project) {
+  //   const pIdx = _findIndex(this.model, (p: Project) => p.id === project.id);
+  //   console.log('delete proj idx', pIdx);
+  // }
+
+  // moveProject(project: Project, step: number) {
+
+  // }
   //#endregion
 
   //#region process
@@ -133,7 +214,7 @@ export class ProcManager {
       const str = data.toString();
       this._output.appendProcBuffer(proc, MessageType.data, str);
 
-      if (str.indexOf(proc.startMarker) != -1) {
+      if (str.indexOf(proc.startMarker) !== -1) {
         proc.meta.state = ProcState.running;
         this._output.appendProcBuffer(proc, MessageType.success, 'Process is running.');
       }
@@ -169,12 +250,32 @@ export class ProcManager {
       [pid]
         .concat(children.map((p) => p.PID))
         .forEach(tpid => {
-          try { process.kill(tpid, 'SIGKILL') }
+          try { process.kill(tpid, 'SIGKILL'); }
           catch (ex) { }
         });
       callback();
     });
-  };
+  }
+
+  private moveProc({ proc, step }) {
+    let pIdx = -1;
+    const project = _find(this.projects, (proj: Project) => (pIdx = _findIndex(proj.procs, p => p.id === proc.id)) !== -1);
+
+    if (step === -1 && pIdx === 0) { return; }
+
+    if (step === 1 && pIdx === project.procs.length - 1) { return; }
+
+    moveInArray(project.procs, pIdx, pIdx + step);
+
+    this.projectsModified();
+  }
+  private deleteProc(proc: Process) {
+    let pIdx = -1;
+    const project = _find(this.projects, (proj: Project) => (pIdx = _findIndex(proj.procs, p => p.id === proc.id)) !== -1);
+    console.log('delete proc', project, pIdx);
+
+    project.procs.splice(pIdx, 1);
+  }
 
   //#endregion
 }

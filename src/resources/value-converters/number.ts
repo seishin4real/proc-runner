@@ -7,6 +7,6 @@ export class NumberValueConverter {
   }
 
   fromView(text: string) {
-    return numeral(text).value();    
+    return numeral(text).value();
   }
 }

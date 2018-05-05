@@ -1,5 +1,18 @@
 <template>
-  <toggle-panel icon="proc" title.bind="proc.title" color="orange">
+  <toggle-panel icon="proc" title.bind="proc.title" color="orange" is-collapsed.two-way="proc.meta.isCollapsed">
+
+    <div slot="icons">
+      <a class="card-header-icon" click.delegate="moveUp()" title="Move up">
+        <icon fa="move-up"></icon>
+      </a>
+      <a class="card-header-icon" click.delegate="moveDown()" title="Move down">
+        <icon fa="move-down"></icon>
+      </a>
+      <a class="card-header-icon is-danger" click.delegate="deleteProcess()" title="Delete project">
+        <icon fa="trash"></icon>
+      </a>
+    </div>
+
     <b-field-h label="Title" size="small">
       <b-input is-expanded value.two-way="proc.title"></b-input>
     </b-field-h>
@@ -15,12 +28,6 @@
     <b-field-h label="Start marker" size="small">
       <b-input is-expanded value.two-way="proc.startMarker"></b-input>
     </b-field-h>
-    <footer slot="footer">
-      <a href="#" class="card-footer-item">Delete process</a>
-    </footer>
-    <!-- <b-field-h label="errorMarkers">
-              <b-input is-expanded value.two-way="proc.errorMarkers"></b-input>
-            </b-field-h> -->
 
   </toggle-panel>
 </template>

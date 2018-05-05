@@ -72,7 +72,8 @@
   },
   "scripts": {
     "start": "electron .",
-    "build": "au build"
+    "build": "au build",
+    "lint": "tslint -p ./tsconfig.json -c ./tslint.json"
   },
   "main": "index.js"
 }

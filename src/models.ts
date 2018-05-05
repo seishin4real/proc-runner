@@ -4,6 +4,7 @@ export interface Project {
   id: string;
   title: string;
   procs?: Process[];
+  meta?: ProjectMeta;
 }
 export interface Process {
   id: string;
@@ -25,10 +26,15 @@ export const ProcState = {
   stopping: 'stopping',
 };
 
+export interface ProjectMeta {
+  isCollapsed?: boolean;
+}
+
 export interface ProcessMeta {
   state: ProcStateStrings| string ;
   buffer: string[];
   proc?: ChildProcess;
+  isCollapsed?: boolean;
 }
 
 export enum MessageType {

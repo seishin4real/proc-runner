@@ -1,16 +1,46 @@
 toggle-panel
   display: block
-  .card-header-title
-    margin: 0 !important
+
   .card-header
     background: $dark !important
     justify-content: flex-start
     border-bottom: 1px solid $primary
     cursor: pointer
-    transition: background 0.3s
+    transition: background 0.25s ease-in
     &:hover
+      transition: background 0.15s ease-out
       background: $primary !important
+      div[slot="icons"]
+        opacity: 1
+        transition: opacity 0.15s ease-out
+    &.is-collapsed
+      border-bottom-color: $dark
     p
       flex-grow: 1
+    .card-header-title
+      margin: 0 !important
+      span
+        margin-left: 0.25rem
     .card-header-icon, .card-header-title
       padding: 0.25rem 0.75rem
+    div[slot="icons"]
+      opacity: 0
+      display: flex
+      transition: all 0.25s ease-in
+      .card-header-icon:hover
+        background-color: $dark
+        transition: background-color 0.15s ease-out
+      svg.icon
+        width: 1.2rem
+        height: 1.2rem
+  .card-content
+    padding: 0
+    max-height: 1000px
+    transition: max-height 0.25s ease-in
+    overflow: hidden
+    .content
+      padding: 1.5rem
+    &.is-collapsed 
+      max-height: 0
+      transition: max-height 0.15s ease-out
+

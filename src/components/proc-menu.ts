@@ -20,11 +20,7 @@ export class ProcMenuComponent {
   restart() { this.emitEvent('RESET'); }
   stop() { this.emitEvent('STOP'); }
 
-  // this.state = 'starting'; setTimeout(() => this.state = 'running', 2000);
-  // this.state = 'stopping'; setTimeout(() => this.state = 'starting', 2000); setTimeout(() => this.state = 'running', 4000);
-  // this.state = 'stopping'; setTimeout(() => this.state = 'idle', 2000);
-
   private emitEvent(name: string) {
     this._ea.publish((this.project ? 'PROJECT' : 'PROC') + '_' + name, this.project || this.proc);
   }
-} 
+}
