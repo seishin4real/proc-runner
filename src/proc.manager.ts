@@ -185,28 +185,32 @@ export class ProcManager {
     });
     proc.meta.proc = cmd;
 
-    cmd.stdout.on('data', this.handleProcMessages(proc).bind(this));
-    cmd.stderr.on('data', this.handleProcMessages(proc).bind(this));
+    cmd.stdout.on('data', this.handleProcMessages(proc, MessageType.data).bind(this));
+    cmd.stderr.on('data', this.handleProcMessages(proc, MessageType.error).bind(this));
   }
 
-  private handleProcMessages(proc) {
-    return (msg: Uint8Array) => this.handleMessages(proc, msg);
+  private handleProcMessages(proc, messageType) {
+    return (msg: Uint8Array) => this.handleMessages(proc, messageType, msg);
   }
 
-  private handleMessages(proc: Process, data: Uint8Array) {
+  private handleMessages(proc: Process, messageType: MessageType, data: Uint8Array) {
     const msg = data.toString();
-    this._output.appendProcBuffer(proc, MessageType.data, msg);
+    this._output.appendProcBuffer(proc, messageType, msg);
 
     if (msg.indexOf(proc.startMarker) !== -1) {
       proc.meta.state = ProcState.running;
       this._output.appendProcBuffer(proc, MessageType.success, 'Process is running.');
       //todo show notification
       showNotification('info', proc.title, 'Process is running.');
-    } else if (_findIndex(proc.errorMarkers, m => msg.indexOf(m) !== -1) !== -1) {
+    }
+
+    else if (_findIndex(proc.errorMarkers, m => msg.indexOf(m) !== -1) !== -1) {
       this._output.appendProcBuffer(proc, MessageType.error, 'Process errored.');
       this.procStop(proc);
       showNotification('error', proc.title, 'Process errored.');
-    } else if (_findIndex(proc.progressMarkers, m => msg.indexOf(m) !== -1) !== -1) {
+    }
+
+    else if (_findIndex(proc.progressMarkers, m => msg.indexOf(m) !== -1) !== -1) {
       this._output.appendProcBuffer(proc, MessageType.info, 'Progress!!');
       showNotification('info', proc.title, 'Process is running.');
     }
