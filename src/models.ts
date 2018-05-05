@@ -13,7 +13,7 @@ export interface Process {
   args: string;
   path: string;
   startMarker: string;
-  errorMarker: string[];
+  errorMarkers: string[];
   isBatch: boolean;
   meta?: ProcessMeta;
 }

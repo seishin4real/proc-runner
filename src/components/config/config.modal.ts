@@ -1,4 +1,4 @@
-import { CONFIG_SAVED } from '../../events';
+import { CONFIG_SAVED, PROJECTS_MODIFIED } from '../../events';
 import { autoinject } from 'aurelia-dependency-injection';
 import { DialogController } from 'aurelia-dialog';
 import { EventAggregator } from 'aurelia-event-aggregator';
@@ -23,8 +23,9 @@ export class ConfigModalComponent {
   settings: any;
   projects: any;
 
-  async close() {
+  close() {
     this._store.set('settings', this.settings);
+    this._ea.publish(PROJECTS_MODIFIED);
     this._ea.publish(CONFIG_SAVED);
     this._dialogController.ok();
   }

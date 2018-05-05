@@ -55,7 +55,7 @@ export class ProcManager {
   addProject() {
     this.projects.push(<Project>{
       id: Guid.raw(),
-      title: '',
+      title: 'new project',
       procs: [],
       meta: this.initializeProjectMeta(null, false)
     });
@@ -64,12 +64,12 @@ export class ProcManager {
   addProcess(project: Project) {
     project.procs.push(<Process>{
       id: Guid.raw(),
-      title: '',
-      command: '',
-      args: '',
+      title: 'new process',
+      command: 'npm.cmd',
+      args: 'run',
       path: '',
       startMarker: '',
-      errorMarker: [],
+      errorMarkers: [],
       isBatch: false,
       meta: this.initializeProcMeta(null, false)
     });
@@ -89,8 +89,20 @@ export class ProcManager {
   }
 
   private projectsModified() {
-    const copy = this.projects.slice();
-    this.removeMeta(copy);
+    const copy = <Project[]>this.projects.map(project => ({
+      title: project.title,
+      id: project.id,
+      procs: !project.procs || !project.procs.length ? [] : <Process[]>project.procs.map(proc => ({
+        id: proc.id,
+        title: proc.title,
+        command: proc.command,
+        args: proc.args,
+        path: proc.path,
+        startMarker: proc.startMarker,
+        errorMarkers: proc.errorMarkers,
+        isBatch: proc.isBatch
+      }))
+    }));
     this._store.set('projects', copy);
   }
 
@@ -173,8 +185,6 @@ export class ProcManager {
     if (step === 1 && pIdx === this.projects.length - 1) { return; }
 
     moveInArray(this.projects, pIdx, pIdx + step);
-
-    this.projectsModified();
   }
   private deleteProject(project) {
     const pIdx = _findIndex(this.projects, (p: Project) => p.id === project.id);
@@ -182,14 +192,6 @@ export class ProcManager {
     this.projects.splice(pIdx, 1);
   }
 
-  // deleteProject(project: Project) {
-  //   const pIdx = _findIndex(this.model, (p: Project) => p.id === project.id);
-  //   console.log('delete proj idx', pIdx);
-  // }
-
-  // moveProject(project: Project, step: number) {
-
-  // }
   //#endregion
 
   //#region process
@@ -266,8 +268,6 @@ export class ProcManager {
     if (step === 1 && pIdx === project.procs.length - 1) { return; }
 
     moveInArray(project.procs, pIdx, pIdx + step);
-
-    this.projectsModified();
   }
   private deleteProc(proc: Process) {
     let pIdx = -1;

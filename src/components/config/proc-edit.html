@@ -17,13 +17,16 @@
       <b-input is-expanded value.two-way="proc.title"></b-input>
     </b-field-h>
     <b-field-h label="Command" size="small">
-      <b-input is-expanded value.two-way="proc.command"></b-input>
+      <b-input is-expanded value.two-way="proc.command" help="For node global commands append a '.cmd' extension."></b-input>
     </b-field-h>
     <b-field-h label="Args" size="small">
       <b-input is-expanded value.two-way="proc.args"></b-input>
     </b-field-h>
-    <b-field-h label="Path" size="small">
+    <b-field-h label="Working directory" size="small">
       <b-input is-expanded value.two-way="proc.path"></b-input>
+      <a class="button is-small" click.delegate="pickDir()" title="Pick directory">
+        <icon fa="pick"></icon>
+      </a>
     </b-field-h>
     <b-field-h label="Start marker" size="small">
       <b-input is-expanded value.two-way="proc.startMarker"></b-input>

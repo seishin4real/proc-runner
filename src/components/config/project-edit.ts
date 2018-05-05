@@ -4,7 +4,7 @@ import { EventAggregator } from 'aurelia-event-aggregator';
 import { bindable, customElement } from 'aurelia-framework';
 import { Project } from 'models';
 import { ProcManager } from 'proc.manager';
-import { ElectronDialog } from 'resources';
+import { confirm } from 'resources';
 
 @customElement('project-edit')
 @autoinject()
@@ -20,9 +20,10 @@ export class ProjectEditComponent {
 
   addProcess() { this._procManager.addProcess(this.project); }
   deleteProject() {
-    const result = ElectronDialog.confirm('Confirm delete', `Are you sure you want to delete project "${this.project.title}"?`);
-    if (result) {
-      this._ea.publish(PROJECT_DELETED, this.project);
-    }
+    confirm('Confirm delete', `Are you sure you want to delete project "${this.project.title}"?`).then(result => {
+      if (result) {
+        this._ea.publish(PROJECT_DELETED, this.project);
+      }
+    });
   }
 }
