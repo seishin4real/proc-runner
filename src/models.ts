@@ -14,6 +14,7 @@ export interface Process {
   path: string;
   startMarker: string;
   errorMarkers: string[];
+  progressMarkers: string[];
   isBatch: boolean;
   meta?: ProcessMeta;
 }

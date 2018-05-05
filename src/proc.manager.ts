@@ -202,20 +202,30 @@ export class ProcManager {
     });
     proc.meta.proc = cmd;
 
-    cmd.stdout.on('data', (data: Uint8Array) => {
-      const str = data.toString();
-      this._output.appendProcBuffer(proc, MessageType.data, str);
+    cmd.stdout.on('data', this.handleProcMessages(proc).bind(this));
+    cmd.stderr.on('data', this.handleProcMessages(proc).bind(this));
+  }
 
-      if (str.indexOf(proc.startMarker) !== -1) {
-        proc.meta.state = ProcState.running;
-        this._output.appendProcBuffer(proc, MessageType.success, 'Process is running.');
-      }
-    });
+  private handleProcMessages(proc) {
+    return (msg: Uint8Array) => this.handleMessages(proc, msg);
+  }
 
-    cmd.stderr.on('data', (data: Uint8Array) => {
-      const str = data.toString();
-      this._output.appendProcBuffer(proc, MessageType.error, str);
-    });
+  private handleMessages(proc: Process, data: Uint8Array) {
+    const msg = data.toString();
+    this._output.appendProcBuffer(proc, MessageType.data, msg);
+
+    if (msg.indexOf(proc.startMarker) !== -1) {
+      proc.meta.state = ProcState.running;
+      this._output.appendProcBuffer(proc, MessageType.success, 'Process is running.');
+      //todo show notification
+    } else if (_findIndex(proc.errorMarkers, m => msg.indexOf(m) !== -1) !== -1) {
+      this._output.appendProcBuffer(proc, MessageType.error, 'Process errored.');
+      this.procStop(proc);
+      //todo show notification
+    } else if (_findIndex(proc.progressMarkers, m => msg.indexOf(m) !== -1) !== -1) {
+      this._output.appendProcBuffer(proc, MessageType.info, 'Progress!!');
+      //todo show notification
+    }
   }
 
   private procReset(proc: Process) {
@@ -229,9 +239,9 @@ export class ProcManager {
     return new Promise((resolve, reject) => {
       proc.meta.state = ProcState.stopping;
       this.killProc(proc.meta.proc.pid, () => {
-        this._output.appendProcBuffer(proc, MessageType.info, 'Process closed.');
         proc.meta.state = ProcState.idle;
         proc.meta.proc = null;
+        this._output.appendProcBuffer(proc, MessageType.info, 'Process closed.');
         resolve();
       });
     });

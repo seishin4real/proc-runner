@@ -1,17 +1,23 @@
 import { OUTPUT_INITIALIZED } from '../events';
 import { EventAggregator } from 'aurelia-event-aggregator';
-import { customElement } from 'aurelia-framework';
+import { computedFrom, customElement } from 'aurelia-framework';
+import { debounce as _debounce } from 'lodash';
 import { MessageType, Process } from 'models';
 
 @customElement('proc-output')
 export class ProcOutputComponent {
   constructor(ea: EventAggregator) {
     ea.publish(OUTPUT_INITIALIZED, this);
+    this.updateScrollPos = _debounce(this.debouncedUpdateScrollPos.bind(this), this.scrollUpdateDebounce);
   }
 
-  proc: Process = null;
+  private readonly scrollUpdateDebounce = 250;
+  private updateScrollPos: any;
 
-  public appendProcBuffer(proc: Process, type: MessageType, message: any) {
+  proc: Process = null;
+  list: Element;
+
+  appendProcBuffer(proc: Process, type: MessageType, message: any) {
     let css = '';
     if (type === MessageType.info) { css = 'is-info'; }
     else if (type === MessageType.success) { css = 'is-success'; }
@@ -19,6 +25,11 @@ export class ProcOutputComponent {
     else if (type === MessageType.error) { message = this.processMessage(message); css = 'is-danger'; }
 
     proc.meta.buffer.push(`<div class="notification ${css}">${message}</div>`);
+    this.updateScrollPos();
+  }
+
+  attached() {
+    this.updateScrollPos();
   }
 
   private processMessage(input: string) {
@@ -37,5 +48,15 @@ export class ProcOutputComponent {
       .replace(/\u001B\[36m/g, '</span><span class="c-cyan">')
       .replace(/\u001B\[[0-9]+m/g, '')
       + '</span>';
+  }
+
+  private debouncedUpdateScrollPos() {
+    if (!this.list) { return; }
+
+    const bs = this.list.querySelectorAll('div.b');
+    const last = bs[bs.length - 1];
+    if (!last) { return; }
+
+    last.scrollIntoView();
   }
 }

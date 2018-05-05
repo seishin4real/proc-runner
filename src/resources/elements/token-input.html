@@ -1,0 +1,14 @@
+<template>
+  <b-field-h label.to-view="label">
+    <b-input is-expanded value.two-way="input" placeholder.to-view="placeholder" help.to-view="help"></b-input>
+    <a class="button is-small" click.delegate="add($event)" title="Add to list">
+      <icon fa="plus"></icon>
+    </a>
+  </b-field-h>
+  <div>
+    <div class="tags has-addons" repeat.for="token of value">
+      <span class="tag is-primary">${token}</span>
+      <a class="tag is-delete" click.delegate="remove(token)"></a>
+    </div>
+  </div>
+</template>
