@@ -1,29 +1,30 @@
+import { App } from '../../app';
 import { CONFIG_SAVED, PROJECTS_MODIFIED } from '../../events';
 import { autoinject } from 'aurelia-dependency-injection';
 import { DialogController } from 'aurelia-dialog';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { customElement } from 'aurelia-framework';
-import { Process } from 'models';
+import { Process, Project, Settings } from 'models';
 import { ProcManager } from 'proc.manager';
-import { Store } from 'store';
+import { StoreService } from 'store.service';
 
 @customElement('config-modal')
 @autoinject()
 export class ConfigModalComponent {
   constructor(
     private _dialogController: DialogController,
-    private _store: Store,
+    private _store: StoreService,
     private _ea: EventAggregator,
     private _procManager: ProcManager,
   ) {
-    this.settings = this._store.get('settings');
+    this.settings = this._store.getSettings();
     this.projects = _procManager.projects;
    }
 
   display = 'settings';
-  settings: any;
-  projects: any;
-  
+  settings: Settings;
+  projects: Project[];
+
   activate(proc?: Process) {
     if (proc) {
       this.display = 'projects';
@@ -33,7 +34,8 @@ export class ConfigModalComponent {
   }
 
   close() {
-    this._store.set('settings', this.settings);
+    App.updateSettings(this.settings);
+    this._store.saveSettings(this.settings);
     this._ea.publish(PROJECTS_MODIFIED);
     this._ea.publish(CONFIG_SAVED);
     this._dialogController.ok();

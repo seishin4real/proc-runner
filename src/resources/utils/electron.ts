@@ -1,4 +1,7 @@
-const { remote } = (window as any).nodeRequire('electron');
+import { App } from 'app';
+
+const { remote, ipcRenderer } = (window as any).nodeRequire('electron');
+//const electron = (window as any).nodeRequire('electron');
 
 export const confirm = (title, message) => new Promise((resolve, reject) => {
   const { dialog } = remote;
@@ -27,3 +30,20 @@ export const pickDirectory = (title, message, defaultPath) => new Promise<string
     filePaths => filePaths ? resolve(filePaths[0]) : reject(new Error('no-selection'))
   );
 });
+
+export const showNotification = (type: 'info' | 'warning' | 'success' | 'error', title: string, message: string) => {
+  const ns = App.Settings.notifications;
+
+  ipcRenderer.send('electron-toaster-message', {
+    title,
+    type,
+    message,
+    width : 440,
+    timeout: ns.timeout * 1000,
+    positionX: ns.positionX,
+    positionY: ns.positionY,
+    marginX: ns.marginX || 5,
+    marginY: ns.marginY || 5,
+  });
+};
+

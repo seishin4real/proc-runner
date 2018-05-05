@@ -32,7 +32,7 @@ export interface ProjectMeta {
 }
 
 export interface ProcessMeta {
-  state: ProcStateStrings| string ;
+  state: ProcStateStrings | string;
   buffer: string[];
   proc?: ChildProcess;
   isCollapsed?: boolean;
@@ -44,3 +44,23 @@ export enum MessageType {
   warning,
   data, error
 }
+
+export interface Settings {
+  notifications: {
+    positionX: string;
+    positionY: string;
+    marginX: number,
+    marginY: number,
+    timeout: number;
+  };
+}
+
+export const defaultSettings = <Settings>{
+  notifications: {
+    positionX: 'center',
+    positionY: 'bottom',
+    marginX: 5,
+    marginY: 5,
+    timeout: 6,
+  }
+};

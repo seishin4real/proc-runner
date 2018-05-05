@@ -5,7 +5,10 @@ module.exports = {
     projects: [],
     settings: {
       notifications: {
-        position: 'bottom right',
+        positionX: 'center',
+        positionY: 'bottom',
+        positionX: 5,
+        positionY: 5,
         timeout: 5
       }
     }

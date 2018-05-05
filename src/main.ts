@@ -2,8 +2,10 @@ import environment from './environment';
 import { Aurelia } from 'aurelia-framework';
 import { PLATFORM } from 'aurelia-pal';
 import * as Bluebird from 'bluebird';
+const anyWin = window as any;
 
-// remove out if you don't want a Promise polyfill (remove also from webpack.config.js)
+const { remote, ipcRenderer } = anyWin.nodeRequire('electron');
+
 Bluebird.config({ warnings: { wForgottenReturn: false } });
 
 export function configure(aurelia: Aurelia) {
@@ -14,12 +16,17 @@ export function configure(aurelia: Aurelia) {
     .feature(PLATFORM.moduleName('aurelia-bulma-bridge/index'))
     ;
 
-  // Uncomment the line below to enable animation.
-  // aurelia.use.plugin(PLATFORM.moduleName('aurelia-animator-css'));
-  // if the css animator is enabled, add swap-order="after" to all router-view elements
+  const mainWindow = remote.getCurrentWindow();
 
-  // Anyone wanting to use HTMLImports to load views, will need to install the following plugin.
-  // aurelia.use.plugin(PLATFORM.moduleName('aurelia-html-import-template-loader'));
+  ipcRenderer.on('notification-shim', (e, msg) => {
+    mainWindow.webContents.executeJavaScript(`
+      ipcRenderer.send('electron-toaster-message', {
+          title: '${msg.title}',
+          message: '${msg.options.body}',
+          width: 440
+      });
+    `);
+  });
 
   if (environment.debug) {
     aurelia.use.developmentLogging();

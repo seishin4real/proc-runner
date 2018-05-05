@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+    <title>toaster</title>
+    <style type="text/css">
+      * { margin: 0; padding: 0; }
+
+      body,
+      html {
+        font: 13px/1.4 BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: transparent !important;
+      }
+
+      #card {
+        border-radius: 3px;
+        border: 1px solid #000;
+        padding: 24px 20px;
+        box-shadow: inset 0px 0px 78px -16px rgba(0,0,0,0.75);
+      }
+      #card.info{    background: #209cee; color: #010506; border-color: #010506;}
+      #card.warning{ background: #f89406; color: #000;}
+      #card.success{ background: #62c462; color: #000;}
+      #card.error{   background: #ee5f5b; color: #150302; border-color:#150302;}
+      
+      .ico {
+        color: white;
+        font-size: 32px;
+        padding: 11px;
+      }
+
+      #title {
+        font-weight: bold;
+        font-size: 18px;
+        position: relative;
+        top: -12px;
+      }
+
+      #message {
+        font-size: 14px;
+        margin-bottom: 3px;
+      }
+      hr{
+        background-color: #000;
+        border: none;
+        display: block;
+        height: 1px;
+      }
+      #card.info hr{ background-color: #010506;}
+      #card.error hr{background-color: #150302; }
+
+      #detail {
+        font-weight: bold;
+        font-size: 12px;
+        color: #3c3c3c;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="card">
+      <div id="title"></div>
+      <hr>
+      <div id="message"></div>
+      <div id="detail"></div>
+    </div>
+    <script type="text/javascript" src="client.js"></script>
+  </body>
+
+</html>

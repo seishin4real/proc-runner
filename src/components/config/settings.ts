@@ -1,11 +1,7 @@
 import { bindable, customElement } from 'aurelia-framework';
+import { Settings } from 'models';
 
 @customElement('settings')
 export class SettingsComponent {
-  @bindable() model: {
-    notifications: {
-      position: string;
-      timeout: number;
-    }
-  };
+  @bindable() model: Settings;
 }

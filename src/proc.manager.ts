@@ -13,8 +13,8 @@ import {
   Project,
   ProjectMeta
   } from 'models';
-import { moveInArray } from 'resources';
-import { Store } from 'store';
+import { moveInArray, showNotification } from 'resources';
+import { StoreService } from 'store.service';
 
 const anyWin = window as any;
 const { spawn } = anyWin.nodeRequire('child_process');
@@ -24,7 +24,7 @@ const psTree = anyWin.nodeRequire('ps-tree');
 export class ProcManager {
   constructor(
     private _ea: EventAggregator,
-    private _store: Store
+    private _store: StoreService
   ) {
     _ea.subscribe(events.PROJECT_START, this.projectStart.bind(this));
     _ea.subscribe(events.PROJECT_RESET, this.projectReset.bind(this));
@@ -32,7 +32,8 @@ export class ProcManager {
     _ea.subscribe(events.PROC_START, this.procStart.bind(this));
     _ea.subscribe(events.PROC_RESET, this.procReset.bind(this));
     _ea.subscribe(events.PROC_STOP, this.procStop.bind(this));
-    _ea.subscribe(events.PROJECTS_MODIFIED, this.projectsModified.bind(this));
+
+    _ea.subscribe(events.PROJECTS_MODIFIED, () => this._store.saveProjects(this.projects));
     _ea.subscribe(events.APP_CLOSING, () => this.killProcesses(() => this._ea.publish(events.APP_FINISHED)));
 
     _ea.subscribeOnce(events.OUTPUT_INITIALIZED, output => this._output = output);
@@ -48,7 +49,7 @@ export class ProcManager {
   projects: Project[];
 
   getProjects(): Project[] {
-    return this.projects = this._store.get('projects')
+    return this.projects = this._store.getProjects()
       .map(this.initializeMeta.bind(this));
   }
 
@@ -91,24 +92,6 @@ export class ProcManager {
   unfoldProject(proc: Process) {
     const project = _find(this.projects, (proj: Project) => _findIndex(proj.procs, p => p.id === proc.id) !== -1);
     project.meta.isCollapsed = false;
-  }
-
-  private projectsModified() {
-    const copy = <Project[]>this.projects.map(project => ({
-      title: project.title,
-      id: project.id,
-      procs: !project.procs || !project.procs.length ? [] : <Process[]>project.procs.map(proc => ({
-        id: proc.id,
-        title: proc.title,
-        command: proc.command,
-        args: proc.args,
-        path: proc.path,
-        startMarker: proc.startMarker,
-        errorMarkers: proc.errorMarkers,
-        isBatch: proc.isBatch
-      }))
-    }));
-    this._store.set('projects', copy);
   }
 
   //#region project
@@ -218,17 +201,19 @@ export class ProcManager {
       proc.meta.state = ProcState.running;
       this._output.appendProcBuffer(proc, MessageType.success, 'Process is running.');
       //todo show notification
+      showNotification('info', proc.title, 'Process is running.');
     } else if (_findIndex(proc.errorMarkers, m => msg.indexOf(m) !== -1) !== -1) {
       this._output.appendProcBuffer(proc, MessageType.error, 'Process errored.');
       this.procStop(proc);
-      //todo show notification
+      showNotification('error', proc.title, 'Process errored.');
     } else if (_findIndex(proc.progressMarkers, m => msg.indexOf(m) !== -1) !== -1) {
       this._output.appendProcBuffer(proc, MessageType.info, 'Progress!!');
-      //todo show notification
+      showNotification('info', proc.title, 'Process is running.');
     }
   }
 
   private procReset(proc: Process) {
+    //todo fix
     this.procStop(proc);
     this.procStart(proc);
   }
@@ -242,6 +227,7 @@ export class ProcManager {
         proc.meta.state = ProcState.idle;
         proc.meta.proc = null;
         this._output.appendProcBuffer(proc, MessageType.info, 'Process closed.');
+        showNotification('info', proc.title, 'Process closed.');
         resolve();
       });
     });

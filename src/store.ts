@@ -11,13 +11,21 @@ export class Store {
 
   path: string;
   data: any;
+  preWriteFn: (data: any) => any;
 
   get(key) {
     return this.data[key];
   }
   set(key, val) {
     this.data[key] = val;
-    writeFileSync(this.path, JSON.stringify(this.data));
+
+    writeFileSync(
+      this.path,
+      JSON.stringify(this.preWriteFn
+        ? this.preWriteFn(this.data)
+        : this.data
+      )
+    );
   }
 
   private parseDataFile(filePath: string, defaults) {
