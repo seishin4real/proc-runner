@@ -88,6 +88,11 @@ export class ProcManager {
     Promise.all(kills).then(callback).catch(e => console.log(e));
   }
 
+  unfoldProject(proc: Process) {
+    const project = _find(this.projects, (proj: Project) => _findIndex(proj.procs, p => p.id === proc.id) !== -1);
+    project.meta.isCollapsed = false;
+  }
+
   private projectsModified() {
     const copy = <Project[]>this.projects.map(project => ({
       title: project.title,
@@ -160,21 +165,6 @@ export class ProcManager {
     };
     if (proc) { proc.meta = m; }
     return m;
-  }
-
-  private removeMeta(projects: Project[]) {
-    for (let p = 0; p < projects.length; p++) {
-      const project = projects[p];
-      delete project.meta;
-
-      const { procs } = project;
-      if (!procs || !procs.length) { continue; }
-
-      for (let i = 0; i < procs.length; i++) {
-        const proc = procs[i];
-        delete proc.meta;
-      }
-    }
   }
 
   private moveProject({ project, step }) {

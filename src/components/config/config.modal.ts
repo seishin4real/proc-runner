@@ -3,6 +3,7 @@ import { autoinject } from 'aurelia-dependency-injection';
 import { DialogController } from 'aurelia-dialog';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { customElement } from 'aurelia-framework';
+import { Process } from 'models';
 import { ProcManager } from 'proc.manager';
 import { Store } from 'store';
 
@@ -22,6 +23,14 @@ export class ConfigModalComponent {
   display = 'settings';
   settings: any;
   projects: any;
+  
+  activate(proc?: Process) {
+    if (proc) {
+      this.display = 'projects';
+      proc.meta.isCollapsed = false;
+      this._procManager.unfoldProject(proc);
+    }
+  }
 
   close() {
     this._store.set('settings', this.settings);

@@ -24,6 +24,7 @@ app.on('ready', function () {
     height
     // frame: false
   });
+  
   mainWindow.webContents.openDevTools();
   mainWindow.setMenu(null);
   mainWindow.on('resize', () => {

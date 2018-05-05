@@ -5,6 +5,11 @@
       <span>${project ? project.title : proc.title}</span>
     </div>
     <div class="field has-addons">
+      <p class="control proc-config">
+        <a class="button is-small" title="Config" click.delegate="config()">
+          <icon fa="cog"></icon>
+        </a>
+      </p>
       <p class="control" if.bind="proc">
         <a class="button is-small ${proc.isBatch ? 'isBatch': ''}" title="Included in batch" click.delegate="toggleIsBatch()">
           <icon hash="radio-${(proc.isBatch ? 'checked' : 'unchecked')}"></icon>

@@ -10,6 +10,9 @@
       padding-left: 0.5rem 
   &.proc
     border-bottom: 1px dotted lighten($primary, .2)
+  &:hover .proc-config
+    opacity: 1
+    transition: opacity 0.15s ease-out
   > div
     flex: 0 0 auto
   .icon
@@ -27,3 +30,6 @@
         fill: $accent
     &.isBatch svg.icon
       fill: $warning
+  .proc-config
+    opacity: 0
+    transition: opacity 0.25s ease-in

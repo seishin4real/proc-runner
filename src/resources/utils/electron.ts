@@ -16,7 +16,7 @@ export const confirm = (title, message) => new Promise((resolve, reject) => {
 
 export const pickDirectory = (title, message, defaultPath) => new Promise<string>((resolve, reject) => {
   const { dialog } = remote;
-  const choice = dialog.showOpenDialog(
+  dialog.showOpenDialog(
     remote.getCurrentWindow(),
     {
       properties: ['openDirectory'],

@@ -1,4 +1,3 @@
-import { PROJECTS_MODIFIED } from './../../events';
 import { PROC_DELETED, PROC_MOVED } from '../../events';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject, bindable, customElement } from 'aurelia-framework';

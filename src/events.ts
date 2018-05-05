@@ -13,3 +13,4 @@ export const PROC_MOVED = 'PROC_MOVED';
 export const PROC_DELETED = 'PROC_DELETED';
 export const PROJECT_MOVED = 'PROJECT_MOVED';
 export const PROJECT_DELETED = 'PROJECT_DELETED';
+export const APP_OPEN_CONFIG = 'APP_OPEN_CONFIG';
