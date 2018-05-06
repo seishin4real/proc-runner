@@ -1,4 +1,5 @@
 import * as events from './events';
+import { StoreService } from './store.service';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject } from 'aurelia-framework';
 import { ChildProcess } from 'child_process';
@@ -14,7 +15,6 @@ import {
   ProjectMeta
   } from 'models';
 import { moveInArray, showNotification } from 'resources';
-import { StoreService } from 'store.service';
 
 const anyWin = window as any;
 const { spawn } = anyWin.nodeRequire('child_process');
@@ -196,24 +196,36 @@ export class ProcManager {
   private handleMessages(proc: Process, messageType: MessageType, data: Uint8Array) {
     const msg = data.toString();
     this._output.appendProcBuffer(proc, messageType, msg);
-
-    if (msg.indexOf(proc.startMarker) !== -1) {
+    let markerId = -1;
+    if (proc.meta.state !== ProcState.running && msg.indexOf(proc.startMarker) !== -1) {
       proc.meta.state = ProcState.running;
-      this._output.appendProcBuffer(proc, MessageType.success, 'Process is running.');
-      //todo show notification
-      showNotification('info', proc.title, 'Process is running.');
+      const message = 'Process started successfully.';
+
+      this._output.appendProcBuffer(proc, MessageType.success, message);
+      showNotification('success', this.getNotificationTitle(proc), message);
     }
 
-    else if (_findIndex(proc.errorMarkers, m => msg.indexOf(m) !== -1) !== -1) {
-      this._output.appendProcBuffer(proc, MessageType.error, 'Process errored.');
-      this.procStop(proc);
-      showNotification('error', proc.title, 'Process errored.');
+    else if ((markerId = _findIndex(proc.errorMarkers, m => msg.indexOf(m) !== -1)) !== -1) {
+      let message = proc.errorMarkers[markerId];
+      if (proc.meta.state !== ProcState.running) {
+        this.procStop(proc);
+        message += ' Process killed.';
+      }
+
+      this._output.appendProcBuffer(proc, MessageType.error, message);
+      showNotification('error', this.getNotificationTitle(proc), message);
     }
 
-    else if (_findIndex(proc.progressMarkers, m => msg.indexOf(m) !== -1) !== -1) {
-      this._output.appendProcBuffer(proc, MessageType.info, 'Progress!!');
-      showNotification('info', proc.title, 'Process is running.');
+    else if ((markerId = _findIndex(proc.progressMarkers, m => msg.indexOf(m) !== -1)) !== -1) {
+      const message = proc.progressMarkers[markerId];
+      this._output.appendProcBuffer(proc, MessageType.info, 'Process reported progress: ' + message);
+      showNotification('info', this.getNotificationTitle(proc), message);
     }
+  }
+
+  private getNotificationTitle(proc: Process) {
+    const { project, procIdx } = this.findProjectByProc(proc);
+    return `${project.title}: ${proc.title}`;
   }
 
   private procReset(proc: Process) {
@@ -230,8 +242,8 @@ export class ProcManager {
       this.killProc(proc.meta.proc.pid, () => {
         proc.meta.state = ProcState.idle;
         proc.meta.proc = null;
-        this._output.appendProcBuffer(proc, MessageType.info, 'Process closed.');
-        showNotification('info', proc.title, 'Process closed.');
+        this._output.appendProcBuffer(proc, MessageType.info, 'Process stopped.');
+        showNotification('info', this.getNotificationTitle(proc), 'Process stopped.');
         resolve();
       });
     });
@@ -250,21 +262,24 @@ export class ProcManager {
   }
 
   private moveProc({ proc, step }) {
-    let pIdx = -1;
-    const project = _find(this.projects, (proj: Project) => (pIdx = _findIndex(proj.procs, p => p.id === proc.id)) !== -1);
+    const { project, procIdx } = this.findProjectByProc(proc);
 
-    if (step === -1 && pIdx === 0) { return; }
+    if (step === -1 && procIdx === 0) { return; }
 
-    if (step === 1 && pIdx === project.procs.length - 1) { return; }
+    if (step === 1 && procIdx === project.procs.length - 1) { return; }
 
-    moveInArray(project.procs, pIdx, pIdx + step);
+    moveInArray(project.procs, procIdx, procIdx + step);
   }
   private deleteProc(proc: Process) {
-    let pIdx = -1;
-    const project = _find(this.projects, (proj: Project) => (pIdx = _findIndex(proj.procs, p => p.id === proc.id)) !== -1);
-    console.log('delete proc', project, pIdx);
+    const { project, procIdx } = this.findProjectByProc(proc);
 
-    project.procs.splice(pIdx, 1);
+    project.procs.splice(procIdx, 1);
+  }
+
+  private findProjectByProc(proc: Process) {
+    let procIdx = -1;
+    const project = _find(this.projects, (proj: Project) => (procIdx = _findIndex(proj.procs, p => p.id === proc.id)) !== -1);
+    return { project, procIdx };
   }
 
   //#endregion

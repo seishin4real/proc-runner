@@ -20,7 +20,7 @@ app.on('window-all-closed', function () {
 app.on('ready', function () {
   let { width, height } = store.get('windowBounds');
 
-  const mainWindow = new BrowserWindow({
+  let mainWindow = new BrowserWindow({
     webPreferences: { nodeIntegration: true },
     icon: path.join(__dirname, 'dist', 'favicon.ico'),
     width,

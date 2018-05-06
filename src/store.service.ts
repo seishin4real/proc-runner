@@ -38,6 +38,7 @@ export class StoreService {
         path: proc.path,
         startMarker: proc.startMarker,
         errorMarkers: proc.errorMarkers,
+        progressMarkers: proc.progressMarkers,
         isBatch: proc.isBatch
       }))
     }));
