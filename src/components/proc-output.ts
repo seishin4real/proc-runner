@@ -11,6 +11,7 @@ export class ProcOutputComponent {
     this.updateScrollPos = _debounce(this.debouncedUpdateScrollPos.bind(this), this.scrollUpdateDebounce);
   }
 
+  private readonly procBufferSize = 50;
   private readonly scrollUpdateDebounce = 250;
   private updateScrollPos: any;
 
@@ -25,6 +26,9 @@ export class ProcOutputComponent {
     else if (type === MessageType.error) { message = this.processMessage(message); css = 'is-danger'; }
 
     proc.meta.buffer.push(`<div class="notification ${css}">${message}</div>`);
+    if (proc.meta.buffer.length > this.procBufferSize) {
+      proc.meta.buffer.shift();
+    }
     this.updateScrollPos();
   }
 
