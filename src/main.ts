@@ -1,7 +1,7 @@
-import environment from './environment';
 import { Aurelia } from 'aurelia-framework';
 import { PLATFORM } from 'aurelia-pal';
 import * as Bluebird from 'bluebird';
+import environment from 'environment';
 const anyWin = window as any;
 
 const { remote, ipcRenderer } = anyWin.nodeRequire('electron');

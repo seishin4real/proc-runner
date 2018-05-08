@@ -10,5 +10,3 @@ export function configure(config: FrameworkConfiguration) {
     PLATFORM.moduleName('./value-converters/number'),
   ]);
 }
-
-export * from './utils';

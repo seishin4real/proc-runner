@@ -1,8 +1,8 @@
-import { OUTPUT_INITIALIZED } from '../events';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { customElement } from 'aurelia-framework';
 import { debounce as _debounce } from 'lodash';
-import { MessageType, Process } from 'models';
+import { OUTPUT_INITIALIZED } from 'shared/events';
+import { MessageType, Process } from 'shared/models';
 
 @customElement('proc-output')
 export class ProcOutputComponent {

@@ -1,11 +1,11 @@
 const electron = require('electron');
 const BrowserWindow = electron.BrowserWindow;
 const path = require('path');
-const Store = require('./src/store.electron.js');
+const Store = require('./src/electron/store.electron.js');
 const storeDefaults = require('./src/store.default.js');
 require('electron-reload')(path.join(__dirname, 'dist'), { electron: path.join(__dirname, 'node_modules', '.bin', 'electron.cmd') });
 const { app } = electron;
-const Toaster = require('./src/toaster/toastr.js');
+const Toaster = require('./src/electron/toaster.electron.js');
 const toaster = new Toaster();
 
 app.setAppUserModelId('com.seishin.proc-runner');

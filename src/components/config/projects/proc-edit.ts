@@ -1,8 +1,8 @@
-import { PROC_DELETED, PROC_MOVED } from '../../events';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject, bindable, customElement } from 'aurelia-framework';
-import { Process } from 'models';
-import { confirm, pickDirectory } from 'resources';
+import { confirm, pickDirectory } from 'electron/utils.electron';
+import { PROC_DELETED, PROC_MOVED } from 'shared/events';
+import { Process } from 'shared/models';
 
 @customElement('proc-edit')
 @autoinject()

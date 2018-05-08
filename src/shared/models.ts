@@ -1,11 +1,44 @@
 import { ChildProcess } from 'child_process';
 
+export type ProcStateStrings = 'idle' | 'starting' | 'running' | 'stopping';
+
+export const ProcState = {
+  idle: 'idle',
+  starting: 'starting',
+  running: 'running',
+  stopping: 'stopping',
+};
+
+export const defaultSettings = <Settings>{
+  notifications: {
+    positionX: 'center',
+    positionY: 'bottom',
+    marginX: 5,
+    marginY: 5,
+    timeout: 6,
+  }
+};
+
+export interface Settings {
+  notifications: {
+    positionX: string;
+    positionY: string;
+    marginX: number,
+    marginY: number,
+    timeout: number;
+  };
+}
+
 export interface Project {
   id: string;
   title: string;
   procs?: Process[];
   meta?: ProjectMeta;
 }
+export interface ProjectMeta {
+  isCollapsed?: boolean;
+}
+
 export interface Process {
   id: string;
   title: string;
@@ -18,19 +51,6 @@ export interface Process {
   isBatch: boolean;
   meta?: ProcessMeta;
 }
-export type ProcStateStrings = 'idle' | 'starting' | 'running' | 'stopping';
-
-export const ProcState = {
-  idle: 'idle',
-  starting: 'starting',
-  running: 'running',
-  stopping: 'stopping',
-};
-
-export interface ProjectMeta {
-  isCollapsed?: boolean;
-}
-
 export interface ProcessMeta {
   state: ProcStateStrings | string;
   buffer: string[];
@@ -44,23 +64,3 @@ export enum MessageType {
   warning,
   data, error
 }
-
-export interface Settings {
-  notifications: {
-    positionX: string;
-    positionY: string;
-    marginX: number,
-    marginY: number,
-    timeout: number;
-  };
-}
-
-export const defaultSettings = <Settings>{
-  notifications: {
-    positionX: 'center',
-    positionY: 'bottom',
-    marginX: 5,
-    marginY: 5,
-    timeout: 6,
-  }
-};

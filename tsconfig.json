@@ -12,8 +12,14 @@
     "baseUrl": "src",
     "skipLibCheck": true,
     "lib": [
-      "es2017", "dom"
-    ]
+      "es2017",
+      "dom"
+    ],
+    "paths": {
+      "*": [
+        "./*"
+      ]
+    }
   },
   "exclude": [
     "node_modules",

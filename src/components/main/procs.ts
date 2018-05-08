@@ -1,18 +1,17 @@
-import { APP_OPEN_CONFIG, CONFIG_SAVED } from '../events';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject, customElement } from 'aurelia-framework';
-import { Project } from 'models';
-import { ProcManager } from 'proc.manager';
+import { ProcessService } from 'services/process.service';
+import { APP_OPEN_CONFIG } from 'shared/events';
+import { Project } from 'shared/models';
 
 @customElement('procs')
 @autoinject()
 export class ProcsComponent {
   constructor(
-    private _procManager: ProcManager,
+    private _procManager: ProcessService,
     private _ea: EventAggregator,
   ) {
     this.loadProjects();
-    _ea.subscribe(CONFIG_SAVED, this.reloadProjects.bind(this));
   }
 
   projects: Project[];
@@ -29,7 +28,4 @@ export class ProcsComponent {
     this.projects = this._procManager.getProjects();
   }
 
-  private reloadProjects() {
-    this._procManager.killProcesses(this.loadProjects.bind(this));
-  }
 }

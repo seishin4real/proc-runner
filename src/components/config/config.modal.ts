@@ -1,24 +1,23 @@
-import { App } from '../../app';
-import { CONFIG_SAVED, PROJECTS_MODIFIED } from '../../events';
 import { autoinject } from 'aurelia-dependency-injection';
 import { DialogController } from 'aurelia-dialog';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { customElement } from 'aurelia-framework';
-import { Process, Project, Settings } from 'models';
-import { ProcManager } from 'proc.manager';
-import { StoreService } from 'store.service';
+import { ProcessService } from 'services/process.service';
+import { StoreService } from 'services/store.service';
+import { PROJECTS_MODIFIED, SETTINGS_MODIFIED } from 'shared/events';
+import { Process, Project, Settings } from 'shared/models';
 
 @customElement('config-modal')
 @autoinject()
 export class ConfigModalComponent {
   constructor(
     private _dialogController: DialogController,
-    private _store: StoreService,
     private _ea: EventAggregator,
-    private _procManager: ProcManager,
+    private _procManager: ProcessService,
+    store: StoreService
   ) {
-    this.settings = this._store.getSettings();
-    this.projects = _procManager.projects;
+    this.settings = store.getSettings();
+    this.projects = store.getProjects();
    }
 
   display = 'settings';
@@ -34,10 +33,9 @@ export class ConfigModalComponent {
   }
 
   close() {
-    App.updateSettings(this.settings);
-    this._store.saveSettings(this.settings);
     this._ea.publish(PROJECTS_MODIFIED);
-    this._ea.publish(CONFIG_SAVED);
+    this._ea.publish(SETTINGS_MODIFIED);
+
     this._dialogController.ok();
   }
 

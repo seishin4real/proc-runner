@@ -21,6 +21,7 @@ const showToaster = function (currentWindow, msg) {
     alwaysOnTop: true
   });
 
+  // this.window.webContents.openDevTools();
 
   let timer, height, width;
   const [x, y] = currentWindow.getPosition();
@@ -72,7 +73,7 @@ const showToaster = function (currentWindow, msg) {
     }
   };
 
-  const htmlFile = (msg.htmlFile || `file://${__dirname}/default.html`) +
+  const htmlFile = (msg.htmlFile || `file://${__dirname.replace(/\\/g, '/')}/toaster.html`) +
     '?title=' + encodeURIComponent(msg.title || '') +
     '&message=' + encodeURIComponent(msg.message || '') +
     '&detail=' + encodeURIComponent(msg.detail || '') +

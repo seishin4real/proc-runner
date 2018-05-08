@@ -1,7 +1,7 @@
-import { APP_OPEN_CONFIG, PROJECTS_MODIFIED } from '../events';
-import { Process, Project } from '../models';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject, bindable, containerless, customElement } from 'aurelia-framework';
+import { APP_OPEN_CONFIG, PROJECTS_MODIFIED } from 'shared/events';
+import { Process, Project } from 'shared/models';
 
 @containerless()
 @customElement('proc-menu')

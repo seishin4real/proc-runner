@@ -1,11 +1,13 @@
-import * as events from './events';
 import { StoreService } from './store.service';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject } from 'aurelia-framework';
 import { ChildProcess } from 'child_process';
-import { ProcOutputComponent } from 'components/proc-output';
+import { ProcOutputComponent } from 'components/main/proc-output';
+import { showNotification } from 'electron/utils.electron';
 import { Guid } from 'guid-typescript';
 import { compact as _compact, find as _find, findIndex as _findIndex, flatten as _flatten } from 'lodash';
+import * as events from 'shared/events';
+import { moveInArray } from 'shared/func.move-in-array';
 import {
   MessageType,
   Process,
@@ -13,15 +15,14 @@ import {
   ProcState,
   Project,
   ProjectMeta
-  } from 'models';
-import { moveInArray, showNotification } from 'resources';
+  } from 'shared/models';
 
 const anyWin = window as any;
 const { spawn } = anyWin.nodeRequire('child_process');
 const psTree = anyWin.nodeRequire('ps-tree');
 
 @autoinject()
-export class ProcManager {
+export class ProcessService {
   constructor(
     private _ea: EventAggregator,
     private _store: StoreService
@@ -33,7 +34,6 @@ export class ProcManager {
     _ea.subscribe(events.PROC_RESET, this.procReset.bind(this));
     _ea.subscribe(events.PROC_STOP, this.procStop.bind(this));
 
-    _ea.subscribe(events.PROJECTS_MODIFIED, () => this._store.saveProjects(this.projects));
     _ea.subscribe(events.APP_CLOSING, () => this.killProcesses(() => this._ea.publish(events.APP_FINISHED)));
 
     _ea.subscribeOnce(events.OUTPUT_INITIALIZED, output => this._output = output);
@@ -219,12 +219,12 @@ export class ProcManager {
     else if ((markerId = _findIndex(proc.progressMarkers, m => msg.indexOf(m) !== -1)) !== -1) {
       const message = proc.progressMarkers[markerId];
       this._output.appendProcBuffer(proc, MessageType.info, 'Process reported progress: ' + message);
-      showNotification('info', this.getNotificationTitle(proc), message);
+      showNotification('success', this.getNotificationTitle(proc), message);
     }
   }
 
   private getNotificationTitle(proc: Process) {
-    const { project, procIdx } = this.findProjectByProc(proc);
+    const { project } = this.findProjectByProc(proc);
     return `${project.title}: ${proc.title}`;
   }
 

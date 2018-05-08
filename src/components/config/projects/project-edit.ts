@@ -1,16 +1,16 @@
-import { PROJECT_DELETED, PROJECT_MOVED } from '../../events';
 import { autoinject } from 'aurelia-dependency-injection';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { bindable, customElement } from 'aurelia-framework';
-import { Project } from 'models';
-import { ProcManager } from 'proc.manager';
-import { confirm } from 'resources';
+import { confirm } from 'electron/utils.electron';
+import { ProcessService } from 'services/process.service';
+import { PROJECT_DELETED, PROJECT_MOVED } from 'shared/events';
+import { Project } from 'shared/models';
 
 @customElement('project-edit')
 @autoinject()
 export class ProjectEditComponent {
   constructor(
-    private _procManager: ProcManager,
+    private _procManager: ProcessService,
     private _ea: EventAggregator
   ) { }
   @bindable() project: Project;

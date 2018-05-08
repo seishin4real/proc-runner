@@ -31,7 +31,7 @@ module.exports = ({ production, server, extractCss, coverage, analyze } = {}) =>
   },
   entry: {
     app: ['aurelia-bootstrapper'],
-    vendor: ['bluebird', './electron-fix.js'],
+    vendor: ['bluebird', './src/electron/electron-fix.js'],
   },
   mode: production ? 'production' : 'development',
   output: {
