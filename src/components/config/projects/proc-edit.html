@@ -13,26 +13,45 @@
       </a>
     </div>
 
+
     <b-field-h label="Title" size="small">
       <b-input is-expanded value.two-way="proc.title"></b-input>
     </b-field-h>
-    <b-field-h label="Command" size="small">
-      <b-input is-expanded value.two-way="proc.command" help="For node global commands append a '.cmd' extension."></b-input>
-    </b-field-h>
-    <b-field-h label="Args" size="small">
-      <b-input is-expanded value.two-way="proc.args"></b-input>
-    </b-field-h>
+
     <b-field-h label="Working directory" size="small">
       <b-input is-expanded value.two-way="proc.path"></b-input>
       <a class="button is-small" click.delegate="pickDir()" title="Pick directory">
         <icon fa="pick"></icon>
       </a>
     </b-field-h>
+
+    <b-field-h label="Use template" size="small">
+      <div class="field">
+        <div class="control is-expanded is-small">
+          <div class="select is-danger">
+            <select value.bind="template">
+              <option value="">Custom</option>
+              <option repeat.for="t of templates" value.bind="t.title">${t.title}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </b-field-h>
+
+    <b-field-h label="Command" size="small">
+      <b-input is-expanded value.two-way="proc.command" help="For node global commands append a '.cmd' extension."></b-input>
+    </b-field-h>
+
+    <b-field-h label="Args" size="small">
+      <b-input is-expanded value.two-way="proc.args"></b-input>
+    </b-field-h>
+
     <b-field-h label="Start marker" size="small">
       <b-input is-expanded value.two-way="proc.startMarker"></b-input>
     </b-field-h>
 
     <token-input value.two-way="proc.errorMarkers" label="Error markers" help="Input strings contained in error message of process and submit with [Enter]"></token-input>
+
     <token-input value.two-way="proc.progressMarkers" label="Progress markers" help="Input strings contained in progress message of process and submit with [Enter]"></token-input>
 
   </toggle-panel>

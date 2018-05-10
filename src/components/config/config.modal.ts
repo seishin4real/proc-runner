@@ -32,7 +32,7 @@ export class ConfigModalComponent {
     }
   }
 
-  close() {
+  save() {
     this._ea.publish(PROJECTS_MODIFIED);
     this._ea.publish(SETTINGS_MODIFIED);
 

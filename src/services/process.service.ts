@@ -66,11 +66,12 @@ export class ProcessService {
     project.procs.push(<Process>{
       id: Guid.raw(),
       title: 'new process',
-      command: 'npm.cmd',
-      args: 'run',
+      command: '',
+      args: '',
       path: '',
       startMarker: '',
       errorMarkers: [],
+      progressMarkers: [],
       isBatch: false,
       meta: this.initializeProcMeta(null, false)
     });

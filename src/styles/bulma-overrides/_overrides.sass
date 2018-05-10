@@ -18,3 +18,16 @@
 .icon
   position: relative
   right: -0.188rem
+
+
+.is-expanded
+  .select
+    display: block
+  select
+    width: 100%
+
+@each $name, $pair in $colors
+  $color: nth($pair, 1)
+
+  .is-#{$name}.select:after
+      border-color: $color !important

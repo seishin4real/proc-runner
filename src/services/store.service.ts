@@ -1,7 +1,8 @@
+import { templates as defaultTemplates } from './default-templates';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject } from 'aurelia-framework';
 import { PROJECTS_MODIFIED, SETTINGS_MODIFIED } from 'shared/events';
-import { defaultSettings, Process, Project, Settings } from 'shared/models';
+import { defaultSettings, Process, Project, Settings, Template } from 'shared/models';
 import { Store } from 'shared/store';
 
 export const CurrentSettings = <Settings>{};
@@ -19,34 +20,38 @@ export class StoreService {
     CurrentSettings.notifications = this.getSettings();
   }
 
-  // private static _settings: Settings;
-
   private _settings: Settings;
   private _projects: Project[];
-
-  // static get Settings(): Settings { return StoreService._settings; }
-  // static updateSettings(settings: any) { StoreService._settings = settings; }
+  private _templates: Template[];
 
   getSettings() {
     return this._settings || (this._settings = this._store.get('settings') || defaultSettings);
   }
 
-  saveSettings(settings: Settings) {
-    this._store.set('settings', settings);
+  saveSettings() {
+    this._store.set('settings', this._settings);
   }
 
   getProjects() {
     return this._projects || (this._projects = this._store.get('projects') || []);
   }
 
-  saveProjects(projects: Project[]) {
-    this._store.set('projects', projects);
+  saveProjects() {
+    this._store.set('projects', this._projects);
+  }
+
+  getTemplates() {
+    return this._templates || (this._templates = this._store.get('templates') || defaultTemplates);
+  }
+
+  saveTemplates() {
+    this._store.set('templates', this._templates);
   }
 
   private cleanup(model: any) {
     const result = Object.assign({}, model);
 
-    result.projects = <Project[]>model.projects.map(project => ({
+    result.projects = !model.projects || !model.projects.length ? [] : <Project[]>model.projects.map(project => ({
       title: project.title,
       id: project.id,
       procs: !project.procs || !project.procs.length ? [] : <Process[]>project.procs.map(proc => ({

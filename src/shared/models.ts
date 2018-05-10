@@ -64,3 +64,12 @@ export enum MessageType {
   warning,
   data, error
 }
+
+export interface Template {
+  title: string;
+  command: string;
+  args: string;
+  startMarker: string;
+  errorMarkers: string[];
+  progressMarkers: string[];
+}
