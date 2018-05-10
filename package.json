@@ -15,10 +15,11 @@
   "scripts": {
     "start": "electron .",
     "build": "au build",
-    "lint": "tslint -p ./tsconfig.json -c ./tslint.json"
+    "lint": "tslint -p ./tsconfig.json -c ./tslint.json",
+    "bump-version": "npm-auto-version"
   },
   "post-commit": [
-    "npm-auto-version"
+    "bump-version"
   ],
   "dependencies": {
     "aurelia-animator-css": "^1.0.4",
