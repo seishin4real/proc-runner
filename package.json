@@ -2,6 +2,7 @@
   "name": "proc-runner",
   "description": "Provides simple UI for starting various processes during development",
   "version": "0.1.0",
+  "main": "index.js",
   "author": {
     "name": "Seishin",
     "url": "https://github.com/seishin4real"
@@ -11,6 +12,14 @@
     "url": "https://github.com/seishin4real/proc-runner"
   },
   "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "build": "au build",
+    "lint": "tslint -p ./tsconfig.json -c ./tslint.json"
+  },
+  "post-commit": [
+    "npm-auto-version"
+  ],
   "dependencies": {
     "aurelia-animator-css": "^1.0.4",
     "aurelia-bootstrapper": "^2.2.0",
@@ -50,9 +59,11 @@
     "json-loader": "^0.5.7",
     "minimatch": "^3.0.4",
     "node-sass": "^4.7.2",
+    "npm-auto-version": "^1.0.0",
     "nps": "^5.8.2",
     "nps-utils": "^1.5.0",
     "opn": "^5.3.0",
+    "post-commit": "0.0.1",
     "sass-loader": "^6.0.7",
     "style-loader": "^0.20.3",
     "through2": "^2.0.3",
@@ -69,11 +80,5 @@
   },
   "engines": {
     "node": ">= 6.0.0"
-  },
-  "scripts": {
-    "start": "electron .",
-    "build": "au build",
-    "lint": "tslint -p ./tsconfig.json -c ./tslint.json"
-  },
-  "main": "index.js"
+  }
 }
