@@ -24,6 +24,11 @@ export class ProcMenuComponent {
     this._ea.publish(APP_OPEN_CONFIG, this.proc);
   }
 
+  toggleMute() {
+    this.proc.isMute = !this.proc.isMute;
+    this._ea.publish(PROJECTS_MODIFIED);
+  }
+
   private emitEvent(name: string) {
     this._ea.publish((this.project ? 'PROJECT' : 'PROC') + '_' + name, this.project || this.proc);
   }

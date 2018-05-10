@@ -3,7 +3,7 @@ import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject } from 'aurelia-framework';
 import { ChildProcess } from 'child_process';
 import { ProcOutputComponent } from 'components/main/proc-output';
-import { showNotification } from 'electron/utils.electron';
+import { showNotificationIf } from 'electron/utils.electron';
 import { Guid } from 'guid-typescript';
 import { compact as _compact, find as _find, findIndex as _findIndex, flatten as _flatten } from 'lodash';
 import * as events from 'shared/events';
@@ -73,6 +73,7 @@ export class ProcessService {
       errorMarkers: [],
       progressMarkers: [],
       isBatch: false,
+      isMute: false,
       meta: this.initializeProcMeta(null, false)
     });
   }
@@ -203,7 +204,7 @@ export class ProcessService {
       const message = 'Process started successfully.';
 
       this._output.appendProcBuffer(proc, MessageType.success, message);
-      showNotification('success', this.getNotificationTitle(proc), message);
+      showNotificationIf(!proc.isMute, 'success', this.getNotificationTitle(proc), message);
     }
 
     else if ((markerId = _findIndex(proc.errorMarkers, m => msg.indexOf(m) !== -1)) !== -1) {
@@ -214,13 +215,13 @@ export class ProcessService {
       }
 
       this._output.appendProcBuffer(proc, MessageType.error, message);
-      showNotification('error', this.getNotificationTitle(proc), message);
+      showNotificationIf(!proc.isMute, 'error', this.getNotificationTitle(proc), message);
     }
 
     else if ((markerId = _findIndex(proc.progressMarkers, m => msg.indexOf(m) !== -1)) !== -1) {
       const message = proc.progressMarkers[markerId];
       this._output.appendProcBuffer(proc, MessageType.info, 'Process reported progress: ' + message);
-      showNotification('success', this.getNotificationTitle(proc), message);
+      showNotificationIf(!proc.isMute, 'success', this.getNotificationTitle(proc), message);
     }
   }
 
@@ -244,7 +245,7 @@ export class ProcessService {
         proc.meta.state = ProcState.idle;
         proc.meta.proc = null;
         this._output.appendProcBuffer(proc, MessageType.info, 'Process stopped.');
-        showNotification('info', this.getNotificationTitle(proc), 'Process stopped.');
+        showNotificationIf(!proc.isMute, 'info', this.getNotificationTitle(proc), 'Process stopped.');
         resolve();
       });
     });

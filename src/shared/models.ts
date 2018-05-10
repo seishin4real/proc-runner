@@ -49,6 +49,7 @@ export interface Process {
   errorMarkers: string[];
   progressMarkers: string[];
   isBatch: boolean;
+  isMute: boolean;
   meta?: ProcessMeta;
 }
 export interface ProcessMeta {

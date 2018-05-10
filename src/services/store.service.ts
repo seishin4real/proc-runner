@@ -51,7 +51,7 @@ export class StoreService {
   private cleanup(model: any) {
     const result = Object.assign({}, model);
 
-    result.projects = !model.projects || !model.projects.length ? [] : <Project[]>model.projects.map(project => ({
+    result.projects = !result.projects || !result.projects.length ? [] : <Project[]>result.projects.map(project => ({
       title: project.title,
       id: project.id,
       procs: !project.procs || !project.procs.length ? [] : <Process[]>project.procs.map(proc => ({
@@ -63,7 +63,8 @@ export class StoreService {
         startMarker: proc.startMarker,
         errorMarkers: proc.errorMarkers,
         progressMarkers: proc.progressMarkers,
-        isBatch: proc.isBatch
+        isBatch: proc.isBatch,
+        isMute: proc.isMute,
       }))
     }));
 

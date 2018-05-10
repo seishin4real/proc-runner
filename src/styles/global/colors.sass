@@ -1,0 +1,7 @@
+@each $name, $pair in $colors
+  $color: nth($pair, 1)
+
+  .is-text-#{$name}
+    color: $color
+  .is-bg-#{$name}
+    background-color: $color

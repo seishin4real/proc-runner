@@ -6,5 +6,5 @@
 
 ## TODO
 * templates editor
-* per project noitifications mute
 * config - detect if projs/procs modified. don't reset procs if no.
+* [reset] config changes

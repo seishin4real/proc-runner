@@ -2,17 +2,22 @@
   <div class="proc-menu ${project ? 'project': 'proc'}">
     <div class="proc-title">
       <proc-icon if.bind="proc" state.to-view="proc.meta.state"></proc-icon>
-      <span>${project ? project.title : proc.title}</span>
+      <span class="${proc.isBatch ? 'is-text-info' : ''}">${project ? project.title : proc.title}</span>
     </div>
-    <div class="field has-addons">
-      <p class="control proc-config">
+    <div if.bind="proc" class="field has-addons">
+      <p if.bind="proc" class="control ne">
         <a class="button is-small" title="Config" click.delegate="config()">
           <icon fa="cog"></icon>
         </a>
       </p>
-      <p class="control" if.bind="proc">
+      <p if.bind="proc" class="control ne">
         <a class="button is-small ${proc.isBatch ? 'isBatch': ''}" title="Included in batch" click.delegate="toggleIsBatch()">
           <icon hash="radio-${(proc.isBatch ? 'checked' : 'unchecked')}"></icon>
+        </a>
+      </p>
+      <p if.bind="proc" class="control ${proc.isMute ? '' : 'ne'}">
+        <a class="button is-small" title="Mute Notofications" click.delegate="toggleMute()">
+          <icon fa="${proc.isMute ? 'sound-off' : 'sound-on'}"></icon>
         </a>
       </p>
       <p class="control">
