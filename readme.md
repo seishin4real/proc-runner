@@ -8,3 +8,4 @@
 * templates editor
 * config - detect if projs/procs modified. don't reset procs if no.
 * [reset] config changes
+* reset proc config folding

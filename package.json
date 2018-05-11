@@ -1,7 +1,7 @@
 {
   "name": "proc-runner",
   "description": "Provides simple UI for starting various processes during development",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "index.js",
   "author": {
     "name": "Seishin",
