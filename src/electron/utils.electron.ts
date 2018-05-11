@@ -30,12 +30,6 @@ export const pickDirectory = (title, message, defaultPath) => new Promise<string
   )
 );
 
-export const showNotificationIf = (condition: boolean, type: 'info' | 'warning' | 'success' | 'error', title: string, message: string) => {
-  if (condition) {
-    showNotification(type, title, message);
-  }
-};
-
 export const showNotification = (type: 'info' | 'warning' | 'success' | 'error', title: string, message: string) => {
   const ns = CurrentSettings.notifications;
 
@@ -52,3 +46,8 @@ export const showNotification = (type: 'info' | 'warning' | 'success' | 'error',
   });
 };
 
+export const showNotificationIf = (condition: boolean, type: 'info' | 'warning' | 'success' | 'error', title: string, message: string) => {
+  if (condition) {
+    showNotification(type, title, message);
+  }
+};

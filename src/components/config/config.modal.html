@@ -21,9 +21,9 @@
         </ul>
       </div>
     </div>
-    <div style="min-height: 70vh">
-      <projects if.bind="display === 'projects'" model.bind="projects"></projects>
-      <settings if.bind="display === 'settings'" model.bind="settings"></settings>
+    <div style="min-height: 60vh">
+      <projects style.bind="projectsStyle" model.bind="projects" view-model.ref="projectsComponent"></projects>
+      <settings style.bind="settingsStyle" model.bind="settings" view-model.ref="settingsComponent"></settings>
     </div>
     <footer slot="footer">
       <b-level>
@@ -35,6 +35,9 @@
           </div>
         </div>
         <div slot="right">
+          <div class="level-item">
+            <button class="button is-primary" click.delegate="cancel()">Cancel</button>
+          </div>
           <div class="level-item">
             <button class="button is-accent" click.delegate="save()">Save</button>
           </div>

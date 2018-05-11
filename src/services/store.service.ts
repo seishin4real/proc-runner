@@ -14,17 +14,18 @@ export class StoreService {
     ea: EventAggregator
   ) {
     _store.preWriteFn = this.cleanup;
+
     ea.subscribe(SETTINGS_MODIFIED, this.saveSettings.bind(this));
     ea.subscribe(PROJECTS_MODIFIED, this.saveProjects.bind(this));
 
-    CurrentSettings.notifications = this.getSettings();
+    CurrentSettings.notifications = this.getSettings().notifications;
   }
 
   private _settings: Settings;
   private _projects: Project[];
   private _templates: Template[];
 
-  getSettings() {
+  getSettings(): Settings {
     return this._settings || (this._settings = this._store.get('settings') || defaultSettings);
   }
 
@@ -32,7 +33,7 @@ export class StoreService {
     this._store.set('settings', this._settings);
   }
 
-  getProjects() {
+  getProjects(): Project[] {
     return this._projects || (this._projects = this._store.get('projects') || []);
   }
 
@@ -40,7 +41,7 @@ export class StoreService {
     this._store.set('projects', this._projects);
   }
 
-  getTemplates() {
+  getTemplates(): Template[] {
     return this._templates || (this._templates = this._store.get('templates') || defaultTemplates);
   }
 

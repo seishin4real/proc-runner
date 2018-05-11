@@ -3,11 +3,10 @@ import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject } from 'aurelia-framework';
 import { ChildProcess } from 'child_process';
 import { ProcOutputComponent } from 'components/main/proc-output';
-import { showNotificationIf } from 'electron/utils.electron';
+import { showNotification, showNotificationIf } from 'electron/utils.electron';
 import { Guid } from 'guid-typescript';
 import { compact as _compact, find as _find, findIndex as _findIndex, flatten as _flatten } from 'lodash';
 import * as events from 'shared/events';
-import { moveInArray } from 'shared/func.move-in-array';
 import {
   MessageType,
   Process,
@@ -34,14 +33,9 @@ export class ProcessService {
     _ea.subscribe(events.PROC_RESET, this.procReset.bind(this));
     _ea.subscribe(events.PROC_STOP, this.procStop.bind(this));
 
-    _ea.subscribe(events.APP_CLOSING, () => this.killProcesses(() => this._ea.publish(events.APP_FINISHED)));
+    _ea.subscribe(events.APP_CLOSING, () => this.processesKill(() => this._ea.publish(events.APP_FINISHED)));
 
     _ea.subscribeOnce(events.OUTPUT_INITIALIZED, output => this._output = output);
-
-    _ea.subscribe(events.PROC_MOVED, this.moveProc.bind(this));
-    _ea.subscribe(events.PROC_DELETED, this.deleteProc.bind(this));
-    _ea.subscribe(events.PROJECT_MOVED, this.moveProject.bind(this));
-    _ea.subscribe(events.PROJECT_DELETED, this.deleteProject.bind(this));
   }
 
   private _output: ProcOutputComponent;
@@ -49,21 +43,22 @@ export class ProcessService {
   projects: Project[];
 
   getProjects(): Project[] {
-    return this.projects = this._store.getProjects()
-      .map(this.initializeMeta.bind(this));
+    this.projects = this._store.getProjects();
+    this.projects.forEach(project => this.initializeMeta(project));
+    return this.projects;
   }
 
-  addProject() {
-    this.projects.push(<Project>{
+  newProject() {
+    return <Project>{
       id: Guid.raw(),
       title: 'new project',
       procs: [],
       meta: this.initializeProjectMeta(null, false)
-    });
+    };
   }
 
-  addProcess(project: Project) {
-    project.procs.push(<Process>{
+  newProcess() {
+    return <Process>{
       id: Guid.raw(),
       title: 'new process',
       command: '',
@@ -75,28 +70,34 @@ export class ProcessService {
       isBatch: false,
       isMute: false,
       meta: this.initializeProcMeta(null, false)
-    });
+    };
   }
 
   showProcessOutput(process: Process): void {
     this._output.proc = process;
   }
 
-  killProcesses(callback: () => void) {
-    const kills = _flatten(_compact(this.projects.map(project => !this.projectHasItems(project) ? null : project.procs.map(proc => {
-      if (!proc.meta.proc) { return Promise.resolve(); }
-      return this.procStop(proc);
-    }))));
-
-    Promise.all(kills).then(callback).catch(e => console.log(e));
-  }
-
-  unfoldProject(proc: Process) {
-    const project = _find(this.projects, (proj: Project) => _findIndex(proj.procs, p => p.id === proc.id) !== -1);
-    project.meta.isCollapsed = false;
-  }
-
   //#region project
+
+  private initializeMeta(project: Project) {
+    const isCollapsed = true;
+    this.initializeProjectMeta(project, isCollapsed);
+    project.meta.isCollapsed = isCollapsed;
+
+    if (!project.procs || !project.procs.length) { return project; }
+
+    for (let i = 0; i < project.procs.length; i++) {
+      this.initializeProcMeta(project.procs[i], isCollapsed);
+      project.procs[i].meta.isCollapsed = isCollapsed;
+    }
+  }
+
+  private initializeProjectMeta(project: Project, isCollapsed: boolean): ProjectMeta {
+    const m = { isCollapsed };
+
+    if (project) { project.meta = m; }
+    return m;
+  }
 
   private projectStart(project: Project) { this.processBatchProject(project, 'Start'); }
 
@@ -117,30 +118,13 @@ export class ProcessService {
     if (project.procs && project.procs.length) {
       return true;
     }
-    //todo show info - no proc to run
+    showNotification('warning', 'Ooops!', 'No procs to run in batch');
     return false;
   }
 
-  private initializeMeta(project: Project) {
-    const isCollapsed = true;
-    this.initializeProjectMeta(project, isCollapsed);
-    project.meta.isCollapsed = isCollapsed;
+  //#endregion
 
-    if (!project.procs || !project.procs.length) { return project; }
-
-    for (let i = 0; i < project.procs.length; i++) {
-      this.initializeProcMeta(project.procs[i], isCollapsed);
-      project.procs[i].meta.isCollapsed = isCollapsed;
-    }
-    return project;
-  }
-
-  private initializeProjectMeta(project: Project, isCollapsed: boolean): ProjectMeta {
-    const m = { isCollapsed };
-
-    if (project) { project.meta = m; }
-    return m;
-  }
+  //#region process
 
   private initializeProcMeta(proc: Process, isCollapsed): ProcessMeta {
     const m = {
@@ -151,25 +135,6 @@ export class ProcessService {
     if (proc) { proc.meta = m; }
     return m;
   }
-
-  private moveProject({ project, step }) {
-    const pIdx = _findIndex(this.projects, (p: Project) => p.id === project.id);
-
-    if (step === -1 && pIdx === 0) { return; }
-
-    if (step === 1 && pIdx === this.projects.length - 1) { return; }
-
-    moveInArray(this.projects, pIdx, pIdx + step);
-  }
-  private deleteProject(project) {
-    const pIdx = _findIndex(this.projects, (p: Project) => p.id === project.id);
-
-    this.projects.splice(pIdx, 1);
-  }
-
-  //#endregion
-
-  //#region process
 
   private procStart(proc: Process) {
     if (proc.meta.proc) {
@@ -231,9 +196,8 @@ export class ProcessService {
   }
 
   private procReset(proc: Process) {
-    //todo fix
-    this.procStop(proc);
-    this.procStart(proc);
+    this.procStop(proc)
+      .then(_ => this.procStart(proc));
   }
 
   private procStop(proc: Process): Promise<void> {
@@ -241,7 +205,7 @@ export class ProcessService {
 
     return new Promise((resolve, reject) => {
       proc.meta.state = ProcState.stopping;
-      this.killProc(proc.meta.proc.pid, () => {
+      this.procKill(proc.meta.proc.pid, () => {
         proc.meta.state = ProcState.idle;
         proc.meta.proc = null;
         this._output.appendProcBuffer(proc, MessageType.info, 'Process stopped.');
@@ -251,7 +215,7 @@ export class ProcessService {
     });
   }
 
-  private killProc(pid, callback = () => { }) {
+  private procKill(pid, callback = () => { }) {
     psTree(pid, (err, children) => {
       [pid]
         .concat(children.map((p) => p.PID))
@@ -263,19 +227,13 @@ export class ProcessService {
     });
   }
 
-  private moveProc({ proc, step }) {
-    const { project, procIdx } = this.findProjectByProc(proc);
+  private processesKill(callback: () => void) {
+    const kills = _flatten(_compact(this.projects.map(project => !this.projectHasItems(project) ? null : project.procs.map(proc => {
+      if (!proc.meta.proc) { return Promise.resolve(); }
+      return this.procStop(proc);
+    }))));
 
-    if (step === -1 && procIdx === 0) { return; }
-
-    if (step === 1 && procIdx === project.procs.length - 1) { return; }
-
-    moveInArray(project.procs, procIdx, procIdx + step);
-  }
-  private deleteProc(proc: Process) {
-    const { project, procIdx } = this.findProjectByProc(proc);
-
-    project.procs.splice(procIdx, 1);
+    Promise.all(kills).then(callback).catch(e => console.log(e));
   }
 
   private findProjectByProc(proc: Process) {
