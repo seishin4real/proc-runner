@@ -36,10 +36,19 @@ export class ConfigModalComponent {
     this._ea.publish(PROJECTS_MODIFIED);
     this._ea.publish(SETTINGS_MODIFIED);
 
+    this.foldProjects();
+
     this._dialogController.ok();
   }
 
   addProject() {
     this._procManager.addProject();
+  }
+
+  private foldProjects() {
+    this.projects.forEach(p => {
+      p.meta.isCollapsed = true;
+      p.procs.forEach(proc => proc.meta.isCollapsed = true);
+    });
   }
 }

@@ -7,12 +7,6 @@ toggle-panel
     border-bottom: 1px solid $primary
     cursor: pointer
     transition: background 0.25s ease-in
-    &:hover
-      transition: background 0.15s ease-out
-      background: $primary !important
-      div[slot="icons"]
-        opacity: 1
-        transition: opacity 0.15s ease-out
     &.is-collapsed
       border-bottom-color: $dark
     p
@@ -26,13 +20,13 @@ toggle-panel
     div[slot="icons"]
       opacity: 0
       display: flex
-      transition: all 0.25s ease-in
-      .card-header-icon:hover
-        background-color: $dark
-        transition: background-color 0.15s ease-out
+      transition: opacity 0.25s ease-in
       svg.icon
         width: 1.2rem
         height: 1.2rem
+    &:hover div[slot="icons"]
+      opacity: 1
+      transition: opacity 0.15s ease-out
   .card-content
     padding: 0
     max-height: 1000px
