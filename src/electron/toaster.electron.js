@@ -3,8 +3,6 @@
 const electron = require('electron');
 const BrowserWindow = electron.BrowserWindow;  // Module to create native browser window.
 const ipc = require('electron').ipcMain;
-const _find = require('lodash').find;
-
 
 const showToaster = function (currentWindow, msg) {
   const self = this;

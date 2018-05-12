@@ -2,10 +2,10 @@ import './styles/index.sass';
 import { DialogSettings } from 'aurelia-dialog';
 import { DialogService } from 'aurelia-dialog/dist/commonjs/dialog-service';
 import { EventAggregator } from 'aurelia-event-aggregator';
-import { autoinject } from 'aurelia-framework';
-import { ConfigModalComponent } from 'components/config/config.modal';
+import { autoinject, PLATFORM } from 'aurelia-framework';
 import { APP_CLOSING, APP_FINISHED, APP_OPEN_CONFIG } from 'shared/events';
 import { Process } from 'shared/models';
+// import { ConfigModalComponent } from 'components/config/config.modal';
 
 const { remote } = (window as any).nodeRequire('electron');
 
@@ -16,7 +16,7 @@ export class App {
     private _dialogService: DialogService
   ) {
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter') {
+      if (e.key === 'F12') {
         remote.getCurrentWindow().toggleDevTools();
       } else if (e.ctrlKey && e.key === 'r') {
         location.reload(); //doesn't work
@@ -35,7 +35,7 @@ export class App {
 
   appOpenConfig(proc?: Process) {
     const dialogConfig = <DialogSettings>{
-      viewModel: ConfigModalComponent,
+      viewModel: PLATFORM.moduleName('components/config/config.modal'),
       model: proc
     };
     this._dialogService.open(dialogConfig);

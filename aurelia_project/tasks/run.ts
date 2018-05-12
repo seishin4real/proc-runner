@@ -9,7 +9,7 @@ import * as Server from 'webpack-dev-server';
 
 function runWebpack(done) {
   // https://webpack.github.io/docs/webpack-dev-server.html
-  let opts = {
+  const opts = {
     host: 'localhost',
     publicPath: config.output.publicPath,
     filename: config.output.filename,
@@ -22,7 +22,7 @@ function runWebpack(done) {
       colors: require('supports-color')
     }
   } as any;
-console.log('options', opts);
+// console.log('options', opts);
 
   if (!CLIOptions.hasFlag('watch')) {
     opts.lazy = true;

@@ -1,9 +1,12 @@
+const isDev = process.mainModule.filename.indexOf('app.asar') === -1;
 const electron = require('electron');
 const BrowserWindow = electron.BrowserWindow;
 const path = require('path');
 const Store = require('./src/electron/store.electron.js');
 const storeDefaults = require('./src/store.default.js');
-require('electron-reload')(path.join(__dirname, 'dist'), { electron: path.join(__dirname, 'node_modules', '.bin', 'electron.cmd') });
+if (isDev) {
+  require('electron-reload')(path.join(__dirname, 'dist'), { electron: path.join(__dirname, 'node_modules', '.bin', 'electron.cmd') });
+}
 const { app } = electron;
 const Toaster = require('./src/electron/toaster.electron.js');
 const toaster = new Toaster();
@@ -13,8 +16,9 @@ app.setAppUserModelId('com.seishin.proc-runner');
 const store = new Store(storeDefaults);
 
 app.on('window-all-closed', function () {
-  if (process.platform != 'darwin')
+  if (process.platform != 'darwin') {
     app.quit();
+  }
 });
 
 app.on('ready', function () {
@@ -29,8 +33,11 @@ app.on('ready', function () {
 
   toaster.init(mainWindow);
 
-  mainWindow.webContents.openDevTools();
-  // mainWindow.setMenu(null);
+  if (isDev) {
+    mainWindow.webContents.openDevTools();
+  } else {
+    mainWindow.setMenu(null);
+  }
 
   //todo move to app & debounce
   mainWindow.on('resize', () => {

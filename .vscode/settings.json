@@ -5,6 +5,7 @@
   "html.suggest.ionic": false,
   "search.exclude": {
     "**/node_modules": true,
-    "**/dist": true
+    "**/dist": true,
+    "**/dist*": true,
   }
 }

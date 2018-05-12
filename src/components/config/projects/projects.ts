@@ -18,13 +18,10 @@ export class ProjectsComponent {
       this.deleteOrModifyProject(sProjects, sProjects[i]);
     }
     this.addNewProjects(sProjects);
-    console.log('this.model', this.model);
-    console.log('before', sProjects);
 
     _sortBy(sProjects, sProject => _findIndex(this.model, { id: sProject.id })).forEach((project, idx) => {
       sProjects[idx] = project;
     });
-    console.log('after', sProjects);
   }
 
   private deleteOrModifyProject(sProjects: Project[], sProject: Project) {

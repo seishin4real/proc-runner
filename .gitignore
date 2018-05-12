@@ -31,3 +31,4 @@ node_modules
 dist
 index.html
 proc-runner — skrót.lnk
+dist-*

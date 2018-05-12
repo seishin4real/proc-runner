@@ -30,7 +30,7 @@ function buildWebpack(done) {
 function onBuild(err, stats) {
   if (err) {
     console.error(err.stack || err);
-    if (err.details) console.error(err.details);
+    if (err.details) { console.error(err.details); }
     process.exit(1);
   } else {
     process.stdout.write(stats.toString({ colors: require('supports-color') }) + '\n');
