@@ -23,6 +23,7 @@ app.on('window-all-closed', function () {
 
 app.on('ready', function () {
   let { width, height } = store.get('windowBounds');
+  let resizeTimeout = null;
 
   let mainWindow = new BrowserWindow({
     webPreferences: { nodeIntegration: true },
@@ -39,10 +40,9 @@ app.on('ready', function () {
     mainWindow.setMenu(null);
   }
 
-  //todo move to app & debounce
   mainWindow.on('resize', () => {
-    let { width, height } = mainWindow.getBounds();
-    store.set('windowBounds', { width, height });
+    if (resizeTimeout) { clearTimeout(resizeTimeout); }
+    resizeTimeout = setTimeout(saveNewSize, 1000);
   });
 
   mainWindow.loadURL('file://' + __dirname + '/index.html');
@@ -50,4 +50,9 @@ app.on('ready', function () {
   mainWindow.on('closed', function () {
     mainWindow = null;
   });
+
+  function saveNewSize() {
+    let { width, height } = mainWindow.getBounds();
+    store.set('windowBounds', { width, height });
+  }
 });
