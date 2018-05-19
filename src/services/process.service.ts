@@ -154,6 +154,12 @@ export class ProcessService {
 
     cmd.stdout.on('data', this.handleProcMessages(proc, MessageType.data).bind(this));
     cmd.stderr.on('data', this.handleProcMessages(proc, MessageType.error).bind(this));
+    cmd.on('exit', () => {
+      proc.meta.state = ProcState.idle;
+      proc.meta.proc = null;
+      this._output.appendProcBuffer(proc, MessageType.info, 'Process finished.');
+      showNotificationIf(!proc.isMute, 'success', this.getNotificationTitle(proc), 'Process finished.');
+    });
   }
 
   private handleProcMessages(proc, messageType) {
