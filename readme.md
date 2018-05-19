@@ -21,3 +21,4 @@
 ## TODO
 * templates editor
 * detect process end -> reflect in state
+* open settings file btn

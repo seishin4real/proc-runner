@@ -24,7 +24,7 @@ export class Store {
       JSON.stringify(this.preWriteFn
         ? this.preWriteFn(this.data)
         : this.data
-      )
+      , null, 2)
     );
   }
 

@@ -4,6 +4,7 @@ import { ProcessService } from 'services/process.service';
 import { StoreService } from 'services/store.service';
 import { APP_OPEN_CONFIG, PROJECTS_MODIFIED } from 'shared/events';
 import { Project } from 'shared/models';
+const { shell } = (window as any).nodeRequire('electron');
 
 @customElement('nav')
 @autoinject()
@@ -30,5 +31,9 @@ export class NavComponent {
 
   openConfig() {
     this._ea.publish(APP_OPEN_CONFIG);
+  }
+
+  showConfigFile() {
+    shell.showItemInFolder(this._store.storeFilePath);
   }
 }

@@ -25,6 +25,10 @@ export class StoreService {
   private _projects: Project[];
   private _templates: Template[];
 
+  get storeFilePath() {
+    return this._store.path;
+  }
+
   getSettings(): Settings {
     return this._settings || (this._settings = this._store.get('settings') || defaultSettings);
   }
