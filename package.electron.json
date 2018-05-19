@@ -1,0 +1,22 @@
+{
+  "name": "proc-runner",
+  "description": "Provides simple UI for starting various processes during development",
+  "version": "0.1.4",
+  "main": "index.js",
+  "productName": "proc-runner",
+  "author": {
+    "name": "Seishin",
+    "url": "https://github.com/seishin4real"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/seishin4real/proc-runner"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "ps-tree": "^1.1.0"
+  },
+  "engines": {
+    "node": ">= 6.0.0"
+  }
+}

@@ -1,7 +1,7 @@
 {
   "name": "proc-runner",
   "description": "Provides simple UI for starting various processes during development",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "main": "index.js",
   "productName": "proc-runner",
   "author": {
@@ -17,11 +17,9 @@
     "start": "electron .",
     "lint": "tslint -p ./tsconfig.json -c ./tslint.json",
     "bump-version": "npm-auto-version",
-
-    "build-app": "au build",
-    
+    "init-app": "gulp init-app-sources",
     "build-dist": "au build --env prod",
-    "prepare-app": "gulp build-electron-app",
+    "prepare-app": "gulp prepare-app-sources",
     "build-exe": "electron-packager ./dist-electron --out ./dist-app --overwrite --asar",
     "build": "npm-run-series build-dist prepare-app build-exe"
   },
@@ -58,12 +56,13 @@
     "copy-webpack-plugin": "^4.5.1",
     "css-loader": "^0.28.11",
     "del": "^3.0.0",
+    "electron-packager": "^12.1.0",
     "expose-loader": "^0.7.5",
     "extract-text-webpack-plugin": "next",
     "file-loader": "^1.1.11",
     "gulp": "github:gulpjs/gulp#4.0",
     "gulp-copy": "^1.1.0",
-    "gulp-rename": "^1.2.2",
+    "gulp-rename": "^1.2.3",
     "html-loader": "^0.5.5",
     "html-webpack-plugin": "^3.0.6",
     "husky": "^1.0.0-rc.4",
