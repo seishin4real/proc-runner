@@ -22,7 +22,7 @@
     </div>
     
     <section ref="list">
-      <div class="b" repeat.for="b of proc.meta.buffer" innerhtml.to-view="b"></div>
+      <div class="b" repeat.for="b of proc.meta.buffer" innerhtml.bind="b | anchorme"></div>
     </section>
   </div>
 </template>

@@ -5,9 +5,8 @@ import { EventAggregator } from 'aurelia-event-aggregator';
 import { autoinject, PLATFORM } from 'aurelia-framework';
 import { APP_CLOSING, APP_FINISHED, APP_OPEN_CONFIG } from 'shared/events';
 import { Process } from 'shared/models';
-// import { ConfigModalComponent } from 'components/config/config.modal';
 
-const { remote } = (window as any).nodeRequire('electron');
+const { remote, shell } = (window as any).nodeRequire('electron');
 
 @autoinject()
 export class App {
@@ -33,6 +32,12 @@ export class App {
     ea.subscribe(APP_OPEN_CONFIG, this.appOpenConfig.bind(this));
   }
 
+  procOutput: Element;
+
+  attached() {
+    this.handleLinkifiedUrls();
+  }
+
   appOpenConfig(proc?: Process) {
     const dialogConfig = <DialogSettings>{
       viewModel: PLATFORM.moduleName('components/config/config.modal'),
@@ -41,4 +46,13 @@ export class App {
     this._dialogService.open(dialogConfig);
   }
 
+  private handleLinkifiedUrls() {
+    this.procOutput.addEventListener('click', function (e) {
+      if (e.target && (e.target as any).matches('.linkified')) {
+        e.stopPropagation();
+        e.preventDefault();
+        shell.openExternal((e.target as HTMLAnchorElement).href);
+      }
+    });
+  }
 }

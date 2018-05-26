@@ -6,6 +6,7 @@ export function configure(config: FrameworkConfiguration) {
     PLATFORM.moduleName('./elements/icon'),
     PLATFORM.moduleName('./elements/proc-icon'),
     PLATFORM.moduleName('./elements/token-input'),
+    PLATFORM.moduleName('./value-converters/anchorme'),
     PLATFORM.moduleName('./value-converters/remove-cmd'),
     PLATFORM.moduleName('./value-converters/number'),
   ]);

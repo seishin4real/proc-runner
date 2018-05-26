@@ -4,7 +4,7 @@
       <proc-icon if.bind="proc" state.to-view="proc.meta.state"></proc-icon>
       <span class="${proc.isBatch ? 'is-text-info' : ''}">${project ? project.title : proc.title}</span>
     </div>
-    <div if.bind="proc" class="field has-addons">
+    <div class="field has-addons">
       <p if.bind="proc" class="control ne">
         <a class="button is-small" title="Config" click.delegate="config()">
           <icon fa="cog"></icon>

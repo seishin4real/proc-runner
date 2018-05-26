@@ -1,7 +1,7 @@
 {
   "name": "proc-runner",
   "description": "Provides simple UI for starting various processes during development",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "main": "index.js",
   "productName": "proc-runner",
   "author": {
@@ -39,6 +39,7 @@
     "electron-builder": "^20.13.1",
     "electron-reload": "^1.2.2",
     "guid-typescript": "^1.0.7",
+    "linkifyjs": "^2.1.6",
     "lodash": "^4.17.10",
     "numeral": "^2.0.6",
     "ps-tree": "^1.1.0"
